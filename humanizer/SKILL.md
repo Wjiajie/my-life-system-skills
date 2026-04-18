@@ -247,11 +247,20 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 **After:**
 > He said "the project is on track" but others disagreed.
 
+### 19. Punctuation Inside Markdown Boldface (Markdown Rendering Bug)
+**Problem:** AI chatbots often enclose terms and their parenthetical translations entirely within bold Markdown tags. This can break Markdown rendering in some parsers, especially when mixing full-width characters with parentheses, causing the `**` to be displayed as literal text.
+
+**Before:**
+> **不证实偏差（Disconfirmation Bias）**
+
+**After:**
+> **不证实偏差**（Disconfirmation Bias）
+
 ---
 
 ## COMMUNICATION PATTERNS
 
-### 19. Collaborative Communication Artifacts
+### 20. Collaborative Communication Artifacts
 **Words to watch:** I hope this helps, Of course!, Certainly!, You're absolutely right!, Would you like..., let me know, here is a...
 
 **Problem:** Text meant as chatbot correspondence gets pasted as content.
@@ -262,7 +271,7 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 **After:**
 > The French Revolution began in 1789 when financial crisis and food shortages led to widespread unrest.
 
-### 20. Knowledge-Cutoff Disclaimers
+### 21. Knowledge-Cutoff Disclaimers
 **Words to watch:** as of [date], Up to my last training update, While specific details are limited/scarce..., based on available information...
 
 **Problem:** AI disclaimers about incomplete information get left in text.
@@ -273,7 +282,7 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 **After:**
 > The company was founded in 1994, according to its registration documents.
 
-### 21. Sycophantic/Servile Tone
+### 22. Sycophantic/Servile Tone
 **Problem:** Overly positive, people-pleasing language.
 
 **Before:**
@@ -286,7 +295,7 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 
 ## FILLER AND HEDGING
 
-### 22. Filler Phrases
+### 23. Filler Phrases
 **Before → After:**
 - "In order to achieve this goal" → "To achieve this"
 - "Due to the fact that it was raining" → "Because it was raining"
@@ -295,7 +304,7 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 - "The system has the ability to process" → "The system can process"
 - "It is important to note that the data shows" → "The data shows"
 
-### 23. Excessive Hedging
+### 24. Excessive Hedging
 **Problem:** Over-qualifying statements.
 
 **Before:**
@@ -304,7 +313,7 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 **After:**
 > The policy may affect outcomes.
 
-### 24. Generic Positive Conclusions
+### 25. Generic Positive Conclusions
 **Problem:** Vague upbeat endings.
 
 **Before:**
@@ -313,7 +322,7 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 **After:**
 > The company plans to open two more locations next year.
 
-### 25. Hyphenated Word Pair Overuse
+### 26. Hyphenated Word Pair Overuse
 **Words to watch:** third-party, cross-functional, client-facing, data-driven, decision-making, well-known, high-quality, real-time, long-term, end-to-end
 
 **Problem:** AI hyphenates common word pairs with perfect consistency. Humans rarely hyphenate these uniformly, and when they do, it's inconsistent.
