@@ -41,28 +41,31 @@
 <!-- section:header_done -->
 ```
 
-### 步骤 3：工具选择（三级回退）
+### 步骤 3：工具选择（按环境回退）
 
 按以下优先级确定可用的浏览器工具：
 
 ```
-1. 尝试调用 browser_navigate 或 browser_snapshot
-   ├─ ✅ 成功 → 使用 browser_mcp（后续流程使用 browser_navigate + browser_snapshot）
-   └─ ❌ 失败 / 工具不存在
-       2. 使用 browser_subagent（Antigravity 内置，无需检测）
-          ├─ ✅ 成功 → 使用 browser_subagent（后续流程使用任务描述方式）
-          └─ ❌ 失败
-              3. 回退到 read_url_content（纯 HTTP 抓取）
+1. 如果当前运行在 Codex 环境，优先使用 browser-use:browser 插件
+   ├─ ✅ 可用 → 使用 Codex 内置浏览器（后续流程使用 in-app browser 打开、截图、检查 DOM/页面内容）
+   └─ ❌ 不可用 / 非 Codex 环境
+       2. 尝试调用 browser_navigate 或 browser_snapshot
+          ├─ ✅ 成功 → 使用 browser_mcp（后续流程使用 browser_navigate + browser_snapshot）
+          └─ ❌ 失败 / 工具不存在
+              3. 使用 browser_subagent（Antigravity 内置，无需检测）
+                 ├─ ✅ 成功 → 使用 browser_subagent（后续流程使用任务描述方式）
+                 └─ ❌ 失败
+                     4. 回退到 read_url_content（纯 HTTP 抓取）
 ```
 
 各工具的操作方式对照：
 
-| 操作 | browser_mcp | browser_subagent | read_url_content |
-|------|-------------|------------------|------------------|
-| 访问页面 | `browser_navigate(url)` | 在任务描述中指定 URL | `read_url_content(url)` |
-| 获取内容 | `browser_snapshot()` | 子代理自动提取并返回 | 工具直接返回 Markdown |
-| 滚动加载 | `browser_scroll()` | 在任务中要求"滚动获取更多" | ❌ 不支持 |
-| 点击交互 | `browser_click(element)` | 在任务中要求"点击某元素" | ❌ 不支持 |
+| 操作 | browser-use:browser | browser_mcp | browser_subagent | read_url_content |
+|------|---------------------|-------------|------------------|------------------|
+| 访问页面 | 使用 Codex in-app browser 导航到 URL | `browser_navigate(url)` | 在任务描述中指定 URL | `read_url_content(url)` |
+| 获取内容 | 使用截图、DOM/页面检查或浏览器自动化结果提取 | `browser_snapshot()` | 子代理自动提取并返回 | 工具直接返回 Markdown |
+| 滚动加载 | 使用浏览器交互滚动并复查页面 | `browser_scroll()` | 在任务中要求"滚动获取更多" | ❌ 不支持 |
+| 点击交互 | 使用浏览器交互点击并复查页面 | `browser_click(element)` | 在任务中要求"点击某元素" | ❌ 不支持 |
 
 ---
 
@@ -123,7 +126,12 @@
 
 根据确定的平台列表，构造对应平台的搜索 URL（参见 `references/platforms.md`），然后使用已确定的工具获取页面内容：
 
-**browser_mcp（优先）：**
+**browser-use:browser（Codex 默认）：**
+1. 使用 Codex 内置浏览器打开目标 URL
+2. 使用页面截图、DOM/页面检查或浏览器自动化结果提取信息条目
+3. 如需更多内容，在浏览器中滚动加载后再次检查页面
+
+**browser_mcp（备选）：**
 1. 使用 `browser_navigate` 导航到目标 URL
 2. 使用 `browser_snapshot` 获取页面快照
 3. 如需更多内容，使用 `browser_scroll` 滚动后再次 `browser_snapshot`
@@ -135,7 +143,7 @@
 **read_url_content（兜底）：**
 直接使用 `read_url_content` 获取 URL 返回的 Markdown 内容，从中提取信息。
 
-> **提示**：访问即刻（web.okjike.com）前需确保已在浏览器中登录即刻账号（仅 `browser_mcp` 模式支持）。
+> **提示**：访问即刻（web.okjike.com）前需确保已在浏览器中登录即刻账号。Codex 环境优先使用 `browser-use:browser`；非 Codex 环境中通常仅 `browser_mcp` 模式支持复用已登录浏览器会话。
 
 #### 步骤 3：数据提取
 
@@ -202,7 +210,11 @@
 
 ### 步骤 2：逐一访问并提取
 
-**browser_mcp（优先）：**
+**browser-use:browser（Codex 默认）：**
+1. 使用 Codex 内置浏览器访问账号主页（如 `https://x.com/karpathy`）
+2. 使用页面截图、DOM/页面检查或浏览器自动化结果提取最新帖子
+
+**browser_mcp（备选）：**
 1. 使用 `browser_navigate` 访问账号主页（如 `https://x.com/karpathy`）
 2. 使用 `browser_snapshot` 获取页面内容
 
@@ -276,7 +288,7 @@ Start-Process "obsidian://open?vault=claudesidian"
 
 ## 六、注意事项
 
-- 在检索开始前，先通过检测流程确定当前可用的工具层级，整个任务期间保持同一层级
+- 在检索开始前，先通过检测流程确定当前可用的工具层级，整个任务期间保持同一层级；Codex 环境中默认从 `browser-use:browser` 开始
 - **每个板块完成后必须立即写入文件**，不要在内存中积累多个板块后一次性写入
 - 如果某个主题中文关键词信息不足，自动尝试英文关键词（即刻除外，即刻仅使用中文）
 - 关注账号列表可随时在 `~/.hot-info-crawler/user_config.md` 中增删修改

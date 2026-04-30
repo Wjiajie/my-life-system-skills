@@ -1,6 +1,6 @@
 # 安装与配置指南
 
-本技能支持三级浏览器工具回退，按优先级依次尝试。首次使用时还需初始化用户配置文件。
+本技能支持按运行环境选择浏览器工具并逐级回退。Codex 环境默认优先使用内置的 `browser-use:browser` 插件；首次使用时还需初始化用户配置文件。
 
 ---
 
@@ -11,7 +11,23 @@
 
 ---
 
-## 二、🥇 优先方案：Browser MCP
+## 二、🥇 Codex 默认方案：browser-use:browser
+
+在 Codex 环境中，默认优先使用内置的 `browser-use:browser` 插件执行页面导航、截图、DOM/页面检查和交互操作。
+
+### 特点
+
+- **Codex 内置**，无需额外安装 Chrome 扩展或 MCP Server
+- 适合本地 Codex 工作流中的网页打开、滚动、点击、截图和内容检查
+- 当需要登录态时，请先在 Codex 内置浏览器或对应浏览器环境中完成登录
+
+### 验证
+
+在 Codex 中尝试打开 `https://huggingface.co/papers`，确认页面可访问并可提取页面内容。
+
+---
+
+## 三、🥈 备选方案：Browser MCP
 
 `browser_mcp` 是基于 Chrome DevTools Protocol 的 MCP 服务，可复用浏览器的已登录会话，适合需要登录的平台（X.com、即刻等）。
 
@@ -71,9 +87,9 @@
 
 ---
 
-## 三、🥈 备选方案：browser_subagent
+## 四、🥉 备选方案：browser_subagent
 
-当 `browser_mcp` 不可用时（未安装扩展、未连接、或当前 AI 客户端不支持），自动回退到 `browser_subagent`。
+当 `browser-use:browser` 和 `browser_mcp` 均不可用时，自动回退到 `browser_subagent`。
 
 ### 特点
 
@@ -94,9 +110,9 @@
 
 ---
 
-## 四、🥉 兜底方案：read_url_content
+## 五、兜底方案：read_url_content
 
-当以上两种方案均不可用时，回退到 `read_url_content` 进行纯 HTTP 内容抓取。
+当以上浏览器方案均不可用时，回退到 `read_url_content` 进行纯 HTTP 内容抓取。
 
 ### 特点
 
@@ -111,7 +127,11 @@
 
 ---
 
-## 五、验证安装
+## 六、验证安装
+
+### browser-use:browser 验证
+
+在 Codex 中打开 `https://huggingface.co/papers`，确认可以访问页面并提取页面内容。
 
 ### browser_mcp 验证
 
@@ -129,26 +149,26 @@
 
 ---
 
-## 六、常见问题
+## 七、常见问题
 
 ### Q: 如何判断当前可用哪种工具？
-A: 执行流程会自动检测：先尝试 `browser_mcp`，失败则回退到 `browser_subagent`，再失败则回退到 `read_url_content`。详见 `search_workflow.md`。
+A: 执行流程会自动检测：Codex 环境先使用 `browser-use:browser`，不可用时再尝试 `browser_mcp`，失败则回退到 `browser_subagent`，再失败则回退到 `read_url_content`。详见 `search_workflow.md`。
 
 ### Q: 抓取时页面内容为空？
-A: 如果使用 `browser_mcp`，确认扩展已点击 "Connect"，且 Chrome 窗口未被最小化。
+A: Codex 环境下先确认 `browser-use:browser` 打开的页面已加载完成；如果使用 `browser_mcp`，确认扩展已点击 "Connect"，且 Chrome 窗口未被最小化。
 
 ### Q: X.com 需要登录怎么办？
-A: 使用 `browser_mcp` 时，先在 Chrome 中手动登录 X.com。使用其他方案时，X.com 未登录可能只能获取有限公开内容。
+A: Codex 环境优先使用 `browser-use:browser`，请先在对应浏览器环境中登录 X.com。非 Codex 环境使用 `browser_mcp` 时，先在 Chrome 中手动登录 X.com。未登录时可能只能获取有限公开内容。
 
 ### Q: HuggingFace 加载很慢？
 A: 可能需要科学上网。确保代理设置正确，Chrome 能正常访问 `https://huggingface.co/papers`。
 
 ### Q: 即刻搜索无结果或提示登录？
-A: 即刻网页版需登录。使用 `browser_mcp` 时先在 Chrome 中登录 `https://web.okjike.com`；其他方案可能无法使用即刻。可在 `user_config.md` 中将即刻设为 `❌` 禁用。
+A: 即刻网页版需登录。Codex 环境优先使用 `browser-use:browser`，请先在对应浏览器环境中登录 `https://web.okjike.com`；非 Codex 环境使用 `browser_mcp` 时先在 Chrome 中登录。无登录态时可在 `user_config.md` 中将即刻设为 `❌` 禁用。
 
 ---
 
-## 七、用户配置初始化
+## 八、用户配置初始化
 
 首次运行时，除了输出路径配置（`config.json`），还需初始化用户内容配置。
 

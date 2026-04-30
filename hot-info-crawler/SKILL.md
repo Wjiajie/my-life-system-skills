@@ -5,7 +5,7 @@ description: 专门用于从多个信息平台（X.com, HuggingFace Papers, YouT
 
 # Hot Info Crawler 技能指南
 
-此技能使用浏览器自动化工具执行多平台热点检索任务，支持三级工具回退策略。检索结果**增量写入**本地 Markdown 文件，防止中断丢失。
+此技能使用浏览器自动化工具执行多平台热点检索任务，支持按环境选择的工具回退策略。检索结果**增量写入**本地 Markdown 文件，防止中断丢失。
 
 > 首次使用？请先阅读 `references/install.md` 完成依赖安装与配置。
 
@@ -62,15 +62,16 @@ description: 专门用于从多个信息平台（X.com, HuggingFace Papers, YouT
 
 ## 快速概览
 
-### 三级工具回退策略
+### 浏览器工具回退策略
 
 按以下优先级选择浏览器工具（详见 `references/search_workflow.md`）：
 
 | 优先级 | 工具 | 适用条件 | 特点 |
 |--------|------|----------|------|
-| 🥇 优先 | `browser_mcp` | 已安装 Chrome 扩展且 MCP 已连接 | 复用已登录会话，逐步精细操作 |
-| 🥈 备选 | `browser_subagent` | browser_mcp 不可用时 | 内置零配置，任务驱动，独立会话 |
-| 🥉 兜底 | `read_url_content` | 以上均不可用时 | 最轻量，纯 HTTP 抓取，无 JS 渲染 |
+| 🥇 Codex 默认 | `browser-use:browser` | 在 Codex 环境中可用时 | 使用 Codex 内置浏览器插件，优先复用本环境的浏览器测试/交互能力 |
+| 🥈 备选 | `browser_mcp` | 非 Codex 环境，或明确需要已登录 Chrome 扩展会话且 MCP 已连接 | 复用已登录会话，逐步精细操作 |
+| 🥉 备选 | `browser_subagent` | browser-use 与 browser_mcp 均不可用时 | 内置零配置，任务驱动，独立会话 |
+| 兜底 | `read_url_content` | 以上均不可用时 | 最轻量，纯 HTTP 抓取，无 JS 渲染 |
 
 ### 检索策略
 
@@ -93,7 +94,7 @@ description: 专门用于从多个信息平台（X.com, HuggingFace Papers, YouT
 
 ### 注意事项
 
-- 优先使用 `browser_mcp`；不可用时自动回退到 `browser_subagent`；均不可用时回退到 `read_url_content`
+- 在 Codex 环境中默认优先使用 `browser-use:browser`；不可用时再回退到 `browser_mcp`、`browser_subagent`、`read_url_content`
 - 使用 `browser_subagent` 或 `read_url_content` 时，需登录的平台（如即刻）可能无法获取完整内容
 - 中文关键词信息不足时，自动切换英文关键词重试
 - **断点续跑**：如果当天文件已存在且包含部分标记，跳过已完成板块从断点继续（详见 `references/output_config.md`）
