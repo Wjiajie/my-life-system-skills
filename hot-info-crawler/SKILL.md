@@ -1,11 +1,11 @@
 ---
 name: hot-info-crawler
-description: 专门用于从多个信息平台（X.com, HuggingFace Papers, YouTube, Reddit, 即刻等）抓取用户自定义主题的最新、最热门信息的技能。当用户明确要求"抓取当前热点信息"、"获取最新趋势"或"更新信息库"时，启动该技能。支持的主题和信息源均可在用户配置文件中自定义。
+description: 专门用于抓取用户自定义主题的最新、最热门信息并写入本地 Markdown 信息库的技能。当用户明确要求"抓取当前热点信息"、"获取最新趋势"、"更新信息库"、"AI 热点"、"AI 资讯"、"AI 日报"、"最近 AI 圈"或类似请求时启动该技能。AI 工具和 LLM 理论主题优先使用 aihot.virxact.com 的 AI HOT API（见 references/aihot_skill.md）获取；具身智能主题必须使用浏览器打开目标页面抓取；非 AI 主题再按用户配置从 X.com、YouTube、Reddit、即刻等平台检索。支持的主题和信息源均可在用户配置文件中自定义。
 ---
 
 # Hot Info Crawler 技能指南
 
-此技能使用浏览器自动化工具执行多平台热点检索任务，支持按环境选择的工具回退策略。检索结果**增量写入**本地 Markdown 文件，防止中断丢失。
+此技能使用结构化 API、订阅 Feed 与浏览器自动化工具执行热点检索任务，支持按主题选择最合适的信息源。AI 工具与 LLM 理论优先走 AI HOT API，具身智能和非 AI 主题使用浏览器自动化检索。检索结果**增量写入**本地 Markdown 文件，防止中断丢失。
 
 > 首次使用？请先阅读 `references/install.md` 完成依赖安装与配置。
 
@@ -22,6 +22,8 @@ description: 专门用于从多个信息平台（X.com, HuggingFace Papers, YouT
    - 在 `outputDir` 下创建/打开日期文件 `hot-info-{YYYY-MM-DD}.md`
    - 如文件已存在，扫描已完成的板块标记，从断点继续
 2. **执行**：依次检索各板块，**每完成一个板块立即追加写入文件**
+   - AI 工具、LLM 理论：读取 `references/aihot_skill.md`，使用 AI HOT API 获取并按质量规则筛选
+   - 具身智能、非 AI 主题：按 `references/search_workflow.md` 的平台与浏览器工具回退策略执行
 3. **完成**：写入完成标记，告知用户文件路径
 
 ### 重置配置
@@ -45,6 +47,7 @@ description: 专门用于从多个信息平台（X.com, HuggingFace Papers, YouT
 | `references/user_config_template.md` | 用户配置文件模板与字段说明 |
 | `references/output_config.md` | 输出路径配置、增量写入与断点续跑 |
 | `references/follow_builders_feed.md` | Follow-Builders Feed 数据源配置与输出格式 |
+| `references/aihot_skill.md` | AI HOT API 使用说明；AI 相关资讯必须优先使用此文档流程 |
 | `references/platforms.md` | 平台 URL 模板与使用说明（X / HuggingFace / YouTube / Reddit / 即刻） |
 | `references/themes.md` | 平台分配规则（类型与平台的通用映射逻辑） |
 | `references/search_workflow.md` | 完整的检索执行流程（初始化 + Feed + 主题检索 + 账号追踪） |
@@ -64,7 +67,7 @@ description: 专门用于从多个信息平台（X.com, HuggingFace Papers, YouT
 
 ### 浏览器工具回退策略
 
-按以下优先级选择浏览器工具（详见 `references/search_workflow.md`）：
+AI 工具和 LLM 理论先按 `references/aihot_skill.md` 调用 AI HOT API。具身智能和非 AI 主题再按以下优先级选择浏览器工具（详见 `references/search_workflow.md`）：
 
 | 优先级 | 工具 | 适用条件 | 特点 |
 |--------|------|----------|------|
@@ -77,7 +80,9 @@ description: 专门用于从多个信息平台（X.com, HuggingFace Papers, YouT
 
 平台分配由用户配置中主题的 `类型` 字段决定（详见 `references/themes.md`）：
 
-- **技术类**主题 → 默认 HuggingFace Papers + X.com
+- **AI 工具 / LLM 理论**主题 → AI HOT API，质量筛选后每个板块输出 10-15 条
+- **具身智能**主题 → 浏览器打开目标站点页面抓取（如 AI HOT 前端、HuggingFace Papers、X.com 等）
+- **非 AI 技术类**主题 → 默认 X.com + Reddit / 其他配置平台
 - **软技能类**主题 → 默认 YouTube + Reddit + X.com
 - 用户可在配置中自由覆盖每个主题的优先平台
 
@@ -87,14 +92,15 @@ description: 专门用于从多个信息平台（X.com, HuggingFace Papers, YouT
 
 0. **【初始化】** 读取配置 → 创建/打开日期文件 → 写入文件头 `<!-- section:header_done -->`
 1. **【Feed】** 拉取配置的 Feed 数据源 → 生成中文总结 → 写入文件 `<!-- section:feed_done -->`
-2. **【主题检索】** 按配置逐个主题检索 → 每个主题完成后写入文件 `<!-- section:theme_{ID}_done -->`
+2. **【主题检索】** 按配置逐个主题检索；AI 工具 / LLM 理论使用 AI HOT API，具身智能和非 AI 主题使用浏览器页面抓取 → 每个主题完成后写入文件 `<!-- section:theme_{ID}_done -->`
 3. **【账号追踪】** 追踪配置的关注账号 → 写入文件 `<!-- section:accounts_done -->`
 4. **【完成】** 写入完成标记 `<!-- section:all_done -->`
 5. **【同步】** 调用 Obsidian CLI 触发 Remotely Save 同步 → 将文件推送到云端
 
 ### 注意事项
 
-- 在 Codex 环境中默认优先使用 `browser-use:browser`；不可用时再回退到 `browser_mcp`、`browser_subagent`、`read_url_content`
+- AI 工具和 LLM 理论使用 `references/aihot_skill.md` 中的 AI HOT API；具身智能不要使用 API，改用浏览器页面抓取
+- 在 Codex 环境中处理非 AI 主题时默认优先使用 `browser-use:browser`；不可用时再回退到 `browser_mcp`、`browser_subagent`、`read_url_content`
 - 使用 `browser_subagent` 或 `read_url_content` 时，需登录的平台（如即刻）可能无法获取完整内容
 - 中文关键词信息不足时，自动切换英文关键词重试
 - **断点续跑**：如果当天文件已存在且包含部分标记，跳过已完成板块从断点继续（详见 `references/output_config.md`）

@@ -15,6 +15,9 @@ description: >
   MCP Server 地址：http://localhost:8001/sse（本地 Docker 运行，SSE 传输）
   工具通过 m_flow MCP server 调用，需保证服务已启动。
   如服务未启动，参考 references/setup_guide.md 启动。
+
+  Codex 使用约定：记忆内容的提炼、摘要、取舍由当前 Codex 手工完成；M-flow 只作为
+  持久化存储和检索层。默认不要把长内容交给 M-flow 或外部模型自动总结。
 ---
 
 # M-flow 记忆系统使用指南
@@ -62,13 +65,37 @@ description: >
 
 ## 记忆写入协议
 
+### Codex 手工摘要优先
+
+**默认策略：由当前 Codex 先手工提炼，再写入 M-flow。**
+
+M-flow 在本工作流中主要承担：
+
+- 持久化保存
+- 跨会话检索
+- 数据集分区
+- 结构化召回
+
+不要默认让 M-flow 或它背后的模型承担“具体内容总结、判断、归纳”的职责。写入前先由 Codex 生成短、准、可复用的记忆文本，必要时给用户确认。
+
+推荐写入格式：
+
+```text
+事实/决策：
+适用范围：
+证据/来源：
+后续使用方式：
+```
+
+除非用户明确要求“深度图谱化”“长文档入库”“让 M-flow 学习这份资料”，否则不要调用 `memorize` 做异步深度构建。
+
 ### 场景判断
 
 | 内容类型 | 推荐工具 | dataset_name |
 |---------|---------|-------------|
 | 单条快速记录（事实、偏好） | `ingest` | `personal` |
 | 用户-Agent 对话摘要 | `save_interaction` | 自动 |
-| 较长知识/文档（需图谱构建） | `memorize` | 按主题命名 |
+| 较长知识/文档（用户明确要求图谱构建） | `memorize` | 按主题命名 |
 | 项目相关知识 | `ingest` | `project_<项目名>` |
 
 ### 写入流程
@@ -76,7 +103,7 @@ description: >
 ```
 1. 判断内容类型 → 选工具和 dataset_name
 2. 调用 ingest 或 save_interaction（同步）
-3. 若需要深度图谱构建，额外调用 memorize（后台异步）
+3. 若用户明确要求深度图谱构建，额外调用 memorize（后台异步）
 4. 可用 memorize_status 查看异步任务状态
 ```
 
@@ -89,7 +116,7 @@ ingest(data="用户偏好深色主题，代码用 TypeScript", dataset_name="per
 # 保存对话摘要
 save_interaction(data="本次对话：讨论了 M-flow 接入方案，决定使用 MCP 桥接模式")
 
-# 深度知识入库（异步，需配合 memorize_status 查询）
+# 深度知识入库（仅在用户明确要求时使用；异步，需配合 memorize_status 查询）
 memorize(data="<长文档内容>", dataset_name="research")
 ```
 
@@ -149,7 +176,7 @@ learn(datasets=["research"])
 
 ## 注意事项
 
-- `memorize` 是**异步**的，调用后用 `memorize_status` 轮询状态
+- `memorize` 是**异步**的，调用后用 `memorize_status` 轮询状态；默认不要用于普通摘要
 - `ingest` 和 `save_interaction` 是**同步**的，完成即可用
 - Ollama 本地模型（gemma3:1b）适合简单查询，复杂知识图谱构建效果有限
 - 建议 dataset_name 按主题/项目分区，避免所有内容堆在 main_dataset

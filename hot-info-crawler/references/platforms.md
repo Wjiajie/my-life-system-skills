@@ -1,6 +1,13 @@
 # 信息源平台配置
 
-本技能从以下四个平台抓取热点信息。
+本技能从以下平台抓取热点信息。AI 工具和 LLM 理论主题优先使用 AI HOT API；具身智能和非 AI 主题优先使用浏览器检索平台。
+
+## AI HOT
+
+- **用途**：AI 工具、LLM 理论、大模型、AI 产品、AI 论文等资讯
+- **入口文档**：`references/aihot_skill.md`
+- **说明**：直接调用 `https://aihot.virxact.com/api/public/*`，无需浏览器；API 请求必须带浏览器 `User-Agent`
+- **强制规则**：仅 AI 工具和 LLM 理论默认走 AI HOT API；具身智能走浏览器页面抓取
 
 ## X (Twitter)
 
@@ -29,8 +36,8 @@
 - **用途**：深度讨论和社区经验分享，适合软技能类与生活类主题。帖子质量高、讨论深度大
 - **搜索 URL 模板**：`https://www.reddit.com/search/?q={关键词}&sort=new&t=week`
 - **子版块 URL 模板**：`https://www.reddit.com/r/{子版块名}/top/?t=week`
-- **说明**：优先使用子版块（subreddit）浏览热门帖子，搜索 URL 作为补充。`t=week` 参数限制为最近一周的内容，`sort=new` 或 `sort=top` 控制排序
-- **提取字段**：帖子标题、链接、点赞数(upvotes)、评论数、子版块名、发布时间、**帖子摘要**（从正文或热门评论中提炼 1-2 句核心观点）
+- **说明**：优先用浏览器打开子版块（subreddit）本周热门页面，滚动并从页面快照 / DOM 提取帖子；搜索 URL 只作为补充。`t=week` 参数限制为最近一周的内容，`sort=new` 或 `sort=top` 控制排序
+- **提取字段**：帖子标题、链接、点赞数(upvotes)、评论数、子版块名、发布时间、**中文帖子摘要**（从正文或热门评论中提炼 1-2 句核心观点）
 - **推荐子版块**（按主题配置，用户可在 `user_config.md` 中自定义）：
   - 思维模型：r/productivity, r/selfimprovement, r/stoicism, r/getdisciplined
   - 家庭教育：r/Parenting, r/ScienceBasedParenting, r/Montessori

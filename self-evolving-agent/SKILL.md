@@ -149,17 +149,19 @@ This skill includes executable Python scripts for core operations:
 
 Run via: `python scripts/reflect.py` or `python scripts/memory_manager.py`
 
-## 🌟 Full-Stack Development Workflow (Harness Design)
+## Full-Stack Development Workflow (Harness Design)
 
 When acting as the **Architect/Planner** for a full-stack development request, this skill orchestrates a specialized multi-agent Harness Design workflow to ensure high-quality, bug-free delivery. **THIS IS THE CRITICAL ENTRY POINT FOR ALL FULL-STACK DEVELOPMENT.**
 
 **The Harness Design loop:**
 
-1. **Context Retrieval (`code-explorer`)**: Before planning, dispatch the `code-explorer` skill to read the existing codebase, map the subsystem architecture, and find similar features.
-2. **Contract Generation (Phase 2 - Planner)**: Based on the user request and codebase context, write a concrete **Sprint Contract / Test Plan**. Define exactly what "done" looks like without over-specifying implementation details.
-3. **Implementation (`code-dev` or `frontend-design`)**: Pass the contract to the developer skills. They will write the actual code and implement the features based strictly on the plan.
-4. **Static Quality Check (`code-review`)**: Have the `code-review` skill audit the generated code for correctness, security, and the KISS principle. Address any structural issues.
-5. **Dynamic QA (`webapp-testing`)**: CRITICAL STEP. Run the `webapp-testing` skill to launch Playwright and physically interact with the UI/API. Wait for natural `networkidle`, screenshot the results, and verify that the Sprint Contract is fulfilled.
-6. **Reflection & Replan (Phase 4)**: If the QA step fails, reflect on the bug reports, update the plan, and send it back to implementation.
+1. **Product shaping (`product-office-hours`)**: Use when the request is a product idea, vague feature, or scope decision. Reframe the problem, identify the narrowest useful wedge, and produce a product brief.
+2. **Context retrieval (`code-explorer`)**: Before planning, read the existing codebase, map the subsystem architecture, and find similar features.
+3. **Engineering review (`plan-eng-review`)**: Turn the product brief and codebase context into an Engineering Contract: architecture, data flow, failure modes, sequencing, and test matrix.
+4. **Implementation (`code-dev` or `frontend-design`)**: Pass the contract to the developer skills. They write the actual code and tests based strictly on the plan.
+5. **Debugging (`debug-investigator`)**: Use when failures appear and the root cause is not proven. Reproduce, trace, test hypotheses, fix, add regression coverage, and verify.
+6. **Static quality check (`code-review`)**: Audit the generated code for correctness, security, edge cases, simplicity, and test adequacy. Address structural issues.
+7. **Dynamic QA (`code-testing`)**: Run Codex-native test commands and evidence-based browser QA. Capture commands, screenshots, console/network errors, fixes, and re-verification.
+8. **Reflection & Replan (Phase 4)**: If review or QA fails, reflect on the bug reports, update the plan, and send it back to the right stage.
 
 This separation of concerns (Planner → Generator → Evaluator) prevents LLM context anxiety and self-evaluation blindness, drastically lifting the ceiling of autonomous coding capabilities.
