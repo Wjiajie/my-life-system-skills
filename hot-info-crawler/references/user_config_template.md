@@ -29,7 +29,7 @@
 |------|------|-------------|-----------------|
 | Follow Builders | ✅ | `https://raw.githubusercontent.com/zarazhangrui/follow-builders/main/feed-x.json` | `https://raw.githubusercontent.com/zarazhangrui/follow-builders/main/feed-podcasts.json` |
 
-> Feed 数据源通过 `read_url_content` 直接拉取 JSON，无需浏览器工具。
+> Feed 数据源通过 `read_url_content` 直接拉取 JSON，无需浏览器工具。主题检索不套用此规则；非 AI / 软技能主题在 Codex 环境中必须优先使用 `[@chrome](plugin://chrome@openai-bundled)` 打开目标平台页面。
 
 ---
 
@@ -42,9 +42,9 @@
 | AI 工具 | AI Tools | 技术类 | HuggingFace Papers, X.com | ai_tools |
 | LLM 理论 | LLM Theory | 技术类 | HuggingFace Papers, X.com | llm_theory |
 | 具身智能 | Embodied Intelligence | 技术类 | HuggingFace Papers, X.com | embodied_intelligence |
-| 思维模型 | Mental Models | 软技能类 | YouTube, Reddit (r/productivity, r/selfimprovement, r/stoicism, r/getdisciplined), X.com | mental_models |
-| 家庭教育 | Family Education | 软技能类 | YouTube, Reddit (r/Parenting, r/ScienceBasedParenting, r/Montessori), X.com | family_education |
-| 投资管理 | Investment Management | 软技能类 | YouTube, Reddit (r/investing, r/financialindependence, r/Bogleheads), X.com | investment_management |
+| 思维模型 | Mental Models | 软技能类 | YouTube, Reddit (r/productivity, r/selfimprovement, r/stoicism, r/getdisciplined), X.com, 即刻 | mental_models |
+| 家庭教育 | Family Education | 软技能类 | YouTube, Reddit (r/Parenting, r/ScienceBasedParenting, r/Montessori), X.com, 即刻 | family_education |
+| 投资管理 | Investment Management | 软技能类 | YouTube, Reddit (r/investing, r/financialindependence, r/Bogleheads), X.com, 即刻 | investment_management |
 
 ### 字段说明
 
@@ -52,7 +52,7 @@
 - **英文关键词**：中文关键词信息不足时的回退搜索词
 - **类型**：决定默认平台分配
   - `技术类` → 优先 HuggingFace Papers + X.com
-  - `软技能类` → 优先 YouTube + Reddit + X.com
+  - `软技能类` → 优先 YouTube + Reddit + X.com + 即刻；在 Codex 环境中先用 `[@chrome](plugin://chrome@openai-bundled)` 打开目标页面抓取，JSON / HTTP 只作兜底
 - **优先平台**：此主题检索的平台（仅从"信息源开关"中启用的平台中选取）
 - **板块标记ID**：用于生成 `<!-- section:theme_{ID}_done -->` 断点标记，建议使用英文小写+下划线
 

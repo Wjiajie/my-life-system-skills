@@ -1,6 +1,16 @@
 # 信息源平台配置
 
-本技能从以下平台抓取热点信息。AI 工具和 LLM 理论主题优先使用 AI HOT API；具身智能和非 AI 主题优先使用浏览器检索平台。
+本技能从以下平台抓取热点信息。AI 工具和 LLM 理论主题优先使用 AI HOT API；具身智能和非 AI / 软技能主题优先使用浏览器打开平台页面检索。Codex 环境中，思维模型、家庭教育、投资管理等软技能主题必须先用 `[@chrome](plugin://chrome@openai-bundled)` 抓取页面可见内容，JSON/API/纯 HTTP 只能作为兜底或补充校验。
+
+## 软技能类推荐信息源
+
+| 主题 | 首选来源 | 补充来源 | 推荐入口 |
+|------|----------|----------|----------|
+| 思维模型 | YouTube、Reddit、X.com | 即刻、博客 / Newsletter、播客 | YouTube 搜索 `Mental Models`；Reddit: r/productivity, r/selfimprovement, r/stoicism, r/getdisciplined；X.com 搜索 `mental models` 并追踪 George Mack、Adam Grant |
+| 家庭教育 | YouTube、Reddit、X.com | 即刻、专家博客、播客 | YouTube 搜索 `Family Education` / `Parenting`；Reddit: r/Parenting, r/ScienceBasedParenting, r/Montessori；X.com 追踪 Emily Oster 等专家账号 |
+| 投资管理 | YouTube、Reddit、X.com | 即刻、财经博客 / Newsletter、播客 | YouTube 搜索 `Investment Management`；Reddit: r/investing, r/financialindependence, r/Bogleheads；X.com 追踪 Charlie Bilello 等市场数据账号 |
+
+> Reddit 不是唯一来源。它适合抓社区案例和讨论热度；YouTube 更适合深度讲解；X.com 更适合实时观点和专家账号；即刻适合中文社区和本土语境。正式报告应尽量混合 2-4 个来源，除非某平台不可用。
 
 ## AI HOT
 

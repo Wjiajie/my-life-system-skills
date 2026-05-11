@@ -7,7 +7,7 @@
 | 类型 | 默认优先平台 | 适用场景 |
 |------|------------|---------|
 | 技术类 | HuggingFace Papers, X.com | 学术论文和技术社区更活跃的主题（如 AI、ML、编程等） |
-| 软技能类 | YouTube, Reddit, X.com | 高质量内容以视频和深度讨论为主的主题（如教育、商业、个人成长、投资等） |
+| 软技能类 | YouTube, Reddit, X.com；即刻作为中文补充源 | 高质量内容以视频、深度讨论、社交观点和中文社区讨论为主的主题（如教育、商业、个人成长、投资等）。在 Codex 环境中必须先使用 `[@chrome](plugin://chrome@openai-bundled)` 打开目标平台页面抓取可见内容 |
 
 > 用户可在 `user_config.md` 的主题表格中通过 `优先平台` 字段覆盖默认映射。
 
@@ -19,6 +19,22 @@ Agent 在执行每个主题的检索时，按以下逻辑确定使用哪些平�
 2. 与 `user_config.md` 中「信息源开关」表的启用状态做**交集**
 3. 仅对交集中的平台执行检索
 
+## 抓取方式约束
+
+- AI 工具、LLM 理论：按 AI HOT API 流程。
+- 具身智能：使用浏览器打开目标页面抓取。
+- 软技能类：使用浏览器打开 YouTube / Reddit / X.com / 即刻等配置平台页面抓取。思维模型、家庭教育、投资管理属于软技能类；Codex 环境首选 `[@chrome](plugin://chrome@openai-bundled)`，不能直接以 Reddit JSON、搜索 API 或纯 HTTP 结果作为首选来源。
+- JSON / HTTP 读取只作为兜底或补充校验；一旦使用，必须在报告备注中说明原因。
+
+## 软技能类推荐信息源
+
+| 主题 | 推荐网站 / 平台 | 说明 |
+|------|----------------|------|
+| 思维模型 | YouTube、Reddit、X.com、即刻 | YouTube 用于系统教程和长内容；Reddit 用于真实经验讨论；X.com 用于 George Mack、Adam Grant 等账号和高传播观点；即刻用于中文语境下的思维方式、效率和成长讨论 |
+| 家庭教育 | YouTube、Reddit、X.com、即刻 | YouTube 用于育儿专家、课程和访谈；Reddit 用于家长场景和证据型育儿讨论；X.com 用于 Emily Oster 等专家账号；即刻用于中文家庭教育经验和本土语境讨论 |
+| 投资管理 | YouTube、Reddit、X.com、即刻 | YouTube 用于投资讲解和访谈；Reddit 用于投资者社区分歧和案例；X.com 用于市场数据、Charlie Bilello 等账号和实时观点；即刻用于中文投资者讨论和本土市场语境 |
+| 通用补充 | Google / Bing 搜索、Newsletter / 博客、播客平台 | 仅在配置平台结果不足或需要交叉验证时使用；仍应优先保留原始来源链接 |
+
 **示例**：
 - 主题配置：`优先平台 = HuggingFace Papers, X.com`  
 - 用户禁用了 `X.com`  
@@ -29,7 +45,7 @@ Agent 在执行每个主题的检索时，按以下逻辑确定使用哪些平�
 如果用户在信息源开关中启用了即刻，Agent 应将即刻作为**补充检索源**追加到所有主题中（与主题本身的优先平台并列）。
 
 - 即刻仅使用**中文关键词**搜索（不适用英文回退）
-- 即刻需要浏览器登录；Codex 环境默认优先使用 `browser-use:browser`，非 Codex 环境通常依赖 `browser_mcp` 复用已登录会话
+- 即刻需要浏览器登录；Codex 环境默认优先使用 `[@chrome](plugin://chrome@openai-bundled)`，非 Codex 环境通常依赖 `browser_mcp` 复用已登录会话
 - 如果即刻未启用，忽略所有即刻相关检索
 
 ## 关键词回退
