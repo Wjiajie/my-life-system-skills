@@ -2,7 +2,16 @@
 
 Copy the scripts from this skill's `scripts/hooks/` directory into the target project, then reference them from the project `.codex/config.toml`.
 
-Example:
+For global installation, prefer the ready-to-copy examples in:
+
+- `resources/windows-global-config.toml`
+- `resources/macos-global-config.toml`
+
+Use global config when you want Goal Loop available in every Codex project. Use
+project-local `.codex/config.toml` only when you want the hooks limited to one
+repository.
+
+Project-local example:
 
 ```toml
 [features]

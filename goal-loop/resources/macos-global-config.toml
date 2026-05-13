@@ -1,0 +1,31 @@
+# Goal Loop hooks for macOS global Codex config.
+# Copy this block into:
+#   /Users/<you>/.codex/config.toml
+#
+# Replace <you> if you do not want to use $HOME-style expansion in your own
+# command strings. Absolute paths are safest for hooks.
+
+[features]
+codex_hooks = true
+
+[[hooks.UserPromptSubmit]]
+[[hooks.UserPromptSubmit.hooks]]
+type = "command"
+command = '/usr/bin/python3 /Users/<you>/.codex/skills/goal-loop/scripts/hooks/goal_loop_prompt.py'
+timeout = 10
+statusMessage = "Checking goal-loop prompt"
+
+[[hooks.SessionStart]]
+matcher = "startup|resume"
+[[hooks.SessionStart.hooks]]
+type = "command"
+command = '/usr/bin/python3 /Users/<you>/.codex/skills/goal-loop/scripts/hooks/goal_loop_context.py'
+timeout = 10
+statusMessage = "Loading goal-loop context"
+
+[[hooks.Stop]]
+[[hooks.Stop.hooks]]
+type = "command"
+command = '/usr/bin/python3 /Users/<you>/.codex/skills/goal-loop/scripts/hooks/goal_loop_stop.py'
+timeout = 30
+statusMessage = "Checking goal-loop completion"

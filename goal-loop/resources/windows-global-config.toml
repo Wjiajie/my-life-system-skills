@@ -1,0 +1,33 @@
+# Goal Loop hooks for Windows global Codex config.
+# Copy this block into:
+#   C:\Users\<you>\.codex\config.toml
+#
+# Replace <you> if your Windows user name is different.
+# Keep these command strings as single-line values. The verified Windows form
+# avoids nested quotes because some hook runners split quoted command strings
+# differently.
+
+[features]
+codex_hooks = true
+
+[[hooks.UserPromptSubmit]]
+[[hooks.UserPromptSubmit.hooks]]
+type = "command"
+command = 'C:\Users\<you>\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe C:\Users\<you>\.codex\skills\goal-loop\scripts\hooks\goal_loop_prompt.py'
+timeout = 10
+statusMessage = "Checking goal-loop prompt"
+
+[[hooks.SessionStart]]
+matcher = "startup|resume"
+[[hooks.SessionStart.hooks]]
+type = "command"
+command = 'C:\Users\<you>\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe C:\Users\<you>\.codex\skills\goal-loop\scripts\hooks\goal_loop_context.py'
+timeout = 10
+statusMessage = "Loading goal-loop context"
+
+[[hooks.Stop]]
+[[hooks.Stop.hooks]]
+type = "command"
+command = 'C:\Users\<you>\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe C:\Users\<you>\.codex\skills\goal-loop\scripts\hooks\goal_loop_stop.py'
+timeout = 30
+statusMessage = "Checking goal-loop completion"
