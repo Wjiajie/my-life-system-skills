@@ -1,11 +1,32 @@
 ---
 name: knowledge-curator
-description: "AI-driven knowledge base curator that merges Obsidian PARA structure with the LLM Wiki pattern. Automates knowledge compilation, cross-referencing, and maintenance so the user only curates sources and thinks. Use when the user wants to ingest sources, query compiled knowledge, lint/health-check their wiki, do daily/weekly reviews, process inbox items, or build a persistent compounding knowledge wiki within an Obsidian vault."
+description: "Default skill for Codex conversations inside the Claudesidian vault. AI-driven knowledge base curator that merges Obsidian PARA structure with the LLM Wiki pattern. Automates knowledge compilation, cross-referencing, and maintenance so the user only curates sources and thinks. Use by default when cwd is a Claudesidian/Obsidian vault, and whenever the user wants to ingest sources, query compiled knowledge, lint/health-check their wiki, do daily/weekly reviews, process inbox items, or build a persistent compounding knowledge wiki."
 ---
 
 # Knowledge Curator
 
 An AI-powered knowledge base curator that fuses the **Claudesidian PARA method** with Karpathy's **LLM Wiki** pattern. The user curates sources and makes decisions; the LLM writes, maintains, and evolves the wiki.
+
+## Codex Default Behavior
+
+When Codex is operating inside the `claudesidian` project or any vault that matches this PARA layout, treat this skill as the default working protocol for knowledge-management conversations.
+
+Use this skill by default for:
+
+- questions about the user's notes, ideas, projects, areas, resources, reading, reviews, or knowledge base
+- requests to ingest, summarize, organize, connect, query, lint, or review notes
+- command-style prompts such as `/daily-review`, `/research-assistant`, `/inbox-processor`, `/weekly-synthesis`, and `/thinking-partner`
+
+Do not wait for the user to name the skill when the current working directory is `C:\Users\jiaji\Documents\github-project\claudesidian` and the request is about knowledge work. Start by consulting the vault structure, `AGENTS.md`, `07_Wiki/index.md`, and then the relevant source notes.
+
+Codex adaptation rules:
+
+1. Prefer local file tools (`rg`, shell reads, and `apply_patch`) over invented commands. The operations below are LLM workflows, not CLI commands.
+2. Read broadly from `00_Inbox/` through `06_Metadata/`, but keep write operations scoped to `07_Wiki/` unless the user explicitly asks for inbox processing, PARA moves, or raw-note editing.
+3. Before modifying `07_Wiki/`, present the planned pages and wait for user confirmation. If the user has already given explicit approval for a concrete operation, proceed and report changed files.
+4. For ordinary knowledge questions, first read `07_Wiki/index.md`; if the index is empty or incomplete, search `03_Resources/` and relevant PARA folders directly.
+5. Preserve Obsidian conventions: `[[wikilinks]]`, YAML frontmatter, source links, and Chinese output unless the source or user request calls for another language.
+6. Clearly distinguish compiled wiki knowledge from raw notes and from external web research.
 
 ## Philosophy
 
