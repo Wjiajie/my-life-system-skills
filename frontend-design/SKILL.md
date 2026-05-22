@@ -24,6 +24,47 @@ Then implement working code (HTML/CSS/JS, React, Vue, etc.) that is:
 - Cohesive with a clear aesthetic point-of-view
 - Meticulously refined in every detail
 
+## Design System Operating Model
+
+Borrow the useful shape of Open Design without depending on its runtime:
+
+Relevant local references:
+- `references/ui-ux-pro-max-patterns.md` for searchable design knowledge, domain buckets, master/page overrides, and pre-delivery checks.
+- `references/design-consultation-patterns.md` for brand-from-zero design-system kickoff, creative-risk proposals, preview-first validation, and durable `DESIGN.md` structure.
+
+1. **Resolve project context first.** If the repo contains a design-system file (`DESIGN.md`, brand guide, tokens file, screenshots, Figma notes, or an existing component library), treat it as the primary visual contract. Do not freestyle over an existing brand.
+2. **Separate brand from craft.** Brand rules answer "what this product should feel like"; craft rules answer "what good interface work always requires." Brand rules win when they conflict with generic craft guidance.
+3. **Lock a direction before coding.** When no brand exists, pick one concrete direction with palette, type stack, layout posture, interaction density, and 2-4 real references. Bind that direction into CSS variables or design tokens before writing components.
+4. **Choose the artifact type.** Decide whether the request is a product UI, landing page, dashboard, mobile flow, deck-like page, poster/card, data visualization, or design-system artifact. The artifact type determines density, controls, state coverage, motion, and verification.
+5. **Use templates only when they raise the floor.** Reuse local components, shadcn patterns, app shells, or starter layouts when they match the product. Otherwise design from first principles.
+
+When a full `DESIGN.md` is available or worth creating, prefer this compact 9-part shape:
+
+```markdown
+# <Product or Brand>
+## Visual Theme & Atmosphere
+## Color Palette & Roles
+## Typography Rules
+## Component Stylings
+## Layout Principles
+## Depth & Elevation
+## Do's and Don'ts
+## Responsive Behavior
+## Agent Prompt Guide
+```
+
+### Direction Fallbacks
+
+If the user gives no brand and the repo has no usable visual contract, choose one of these as a starting point and make it specific to the product:
+
+- **Editorial intelligence:** print-magazine hierarchy, restrained palette, one decisive image, serif display, quiet confidence.
+- **Modern product minimal:** structured software UI, sparse color, crisp controls, low ornament, strong alignment.
+- **Technical utility:** dense information, mono accents, visible system status, comparison tables, sharp affordances.
+- **Brutalist clarity:** oversized type, hard borders, asymmetric layout, direct copy, deliberate visual tension.
+- **Soft warm utility:** calm surfaces, humane empty states, gentle contrast, rounded but not bubbly components.
+
+Never leave the direction as a vibe label. Name the fonts, token values, spacing rhythm, radius, border/shadow logic, and interaction posture.
+
 ## Frontend Aesthetics Guidelines
 
 Focus on:
@@ -40,6 +81,17 @@ Interpret creatively and make unexpected choices that feel genuinely designed fo
 **IMPORTANT**: Match implementation complexity to the aesthetic vision. Maximalist designs need elaborate code with extensive animations and effects. Minimalist or refined designs need restraint, precision, and careful attention to spacing, typography, and subtle details. Elegance comes from executing the vision well.
 
 Remember: Claude is capable of extraordinary creative work. Don't hold back, show what can truly be created when thinking outside the box and committing fully to a distinctive vision.
+
+## Artifact Quality Gates
+
+Before calling the design done, pass these gates:
+
+- **P0 - Usable artifact:** the primary screen renders, core controls work, no blank canvas, no text overflow, no incoherent overlap, and mobile/desktop layouts are intentionally composed.
+- **P0 - Context fidelity:** if brand/project context exists, tokens, components, copy tone, and density match it. If no context exists, the selected direction is fully encoded in CSS/design tokens.
+- **P0 - State coverage:** loading, empty, error, success, partial, long-content, and narrow-viewport states are handled for every user-facing workflow touched.
+- **P1 - Anti-slop check:** remove generic purple gradients, interchangeable card grids, decorative fake metrics, emoji-as-icons, unmotivated glassmorphism, and any visual choice that could belong to any product.
+- **P1 - Craft check:** typography hierarchy, color roles, spacing scale, radius, elevation, motion timing, accessibility, and touch targets are deliberate and consistent.
+- **P2 - Export/readiness:** if the output is an artifact page, keep it self-contained enough to preview or export cleanly. If it is integrated app code, follow the repo's component and styling conventions.
 
 ## Design Quality Audit — 0-10 Rating Method
 
