@@ -200,11 +200,12 @@ next_action={next_action}
 handoff_status={handoff_status}
 
 请继续固定流程：
-1. 如目标仍不清晰，先按 $goal-loop 的 Goal Shape 规则修正最终状态。
-2. 使用 $plan-eng-review 更新执行方案和 TODO。
+1. 如目标仍不清晰，先按 $goal-loop 的 Goal Shape / Goal Fitness Check 规则修正最终状态，并按 Native Goal Bridge 对齐可用的原生 Goal 能力。
+2. 使用 $plan-eng-review 更新执行方案和 TODO，并判断是否适合启动 subagent。
 3. 执行剩余 TODO。
 4. 使用 $qa 验证并修复。
-5. 最后输出 GOAL_LOOP_STATUS。
+5. 如本轮产生代码、配置或项目产物改动且准备 done/stop，先输出 GOAL_CHANGE_REFLECTION。
+6. 最后输出 GOAL_LOOP_STATUS，且不要在状态块后追加解释。
 
 如果需要用户确认、权限、认证或产品判断，输出 phase: blocked 和 next_action: ask_user。
 如果你判断当前窗口上下文已经不稳定，或连续修复/验证无法收敛，请输出 handoff_status: unstable。

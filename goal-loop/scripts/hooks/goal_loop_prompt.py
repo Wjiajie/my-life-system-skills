@@ -94,11 +94,11 @@ context = f"""
 Goal Loop 已启动。
 
 固定流程：
-1. 先按 $goal-loop 的 Goal Shape 规则，把用户目标整理为“本次会话完成时，应当已经 ...”这种最终状态。
-2. 再使用 $plan-eng-review，形成可拆解执行方案和 TODO 清单。
+1. 先按 $goal-loop 的 Goal Shape / Goal Fitness Check 规则，把用户目标整理为“本次会话完成时，应当已经 ...”这种最终状态；如宿主暴露原生 Goal 设置能力，按 Native Goal Bridge 对齐，否则用内部 durable objective 继续。
+2. 再使用 $plan-eng-review，形成可拆解执行方案和 TODO 清单，并判断是否适合启动 subagent。
 3. 执行 TODO。
 4. 使用 $qa 查找潜在 bug 并修复。
-5. 每轮结束时必须输出 GOAL_LOOP_STATUS 状态块。
+5. 如本轮产生代码、配置或项目产物改动且准备 done/stop，先输出 GOAL_CHANGE_REFLECTION；每轮结束时必须把 GOAL_LOOP_STATUS 作为最后文本块。
 
 必须输出：
 GOAL_LOOP_STATUS:
@@ -106,7 +106,7 @@ phase: goal|plan|execute|qa|done|blocked|handoff_ready
 goal_satisfied: true|false|unknown
 qa_status: pass|fail|not_run|unknown
 remaining_todos: <number|unknown>
-next_action: stop|continue|ask_user
+next_action: stop|continue|ask_user|new_window
 handoff_status: stable|unstable
 
 当 `handoff_status: unstable` 时，hook 会先要求使用 $context-save 的上下文保存结构，将交接内容保存到 `.goal-loop/handoffs/`，然后提示用户新开窗口继续。

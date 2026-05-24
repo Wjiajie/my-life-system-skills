@@ -1,4 +1,4 @@
 interface:
   display_name: "Goal Loop"
-  short_description: "目标驱动的计划、执行、QA、续跑与交接循环"
-  default_prompt: "Use $goal-loop to define the final state and run the plan/execute/QA loop."
+  short_description: "目标驱动的原生 Goal 对齐、计划、执行、QA、续跑与交接循环"
+  default_prompt: "Use $goal-loop to define the final state, align with native Goal mode when available, and run the plan/execute/QA loop."

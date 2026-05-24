@@ -63,7 +63,7 @@ context = f"""
 当前轮次：{state.get("iteration", 0)} / {state.get("max_iterations", 5)}
 
 每轮必须遵循：
-$goal-loop 目标整理 -> $plan-eng-review -> 执行 TODO -> $qa -> GOAL_LOOP_STATUS。
+$goal-loop 目标整理 / Goal Fitness Check / Native Goal Bridge -> $plan-eng-review / Subagent Fit Check -> 执行 TODO -> $qa -> 必要时 GOAL_CHANGE_REFLECTION -> GOAL_LOOP_STATUS。
 {handoff_context}
 """
 
