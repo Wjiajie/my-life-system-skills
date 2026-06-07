@@ -1,364 +1,1094 @@
 ---
 name: humanizer
 description: |
-  Remove signs of AI-generated writing from text. Use when editing or reviewing
-  text to make it sound more natural and human-written. Based on Wikipedia's
-  comprehensive "Signs of AI writing" guide. Detects and fixes patterns including:
-  inflated symbolism, promotional language, superficial -ing analyses, vague
-  attributions, em dash overuse, rule of three, AI vocabulary words, negative
-  parallelisms, and excessive conjunctive phrases.
+  Detect and rewrite AI-generated writing — in 中文 (primary) and English (secondary) — to
+  sound natural and human. Use when 编辑 / 审校 / 润色 / 降 AIGC / 去 AI 味 any text that
+  reads like AI output. 覆盖中文学术论文、公众号 / 小红书 / 知乎 / 微博文案、营销稿、
+  产品文案、技术博客、报告、公文、商业邮件。
+
+  Fixes 30+ 类中文 AI 痕迹（分四组：内容 / 语言语法 / 风格 / 交流），包括但不限于
+  「本文旨在」「赋能」「多维度」「值得注意的是」「综上所述」「希望对您有帮助」
+  等套话；支持 7 种中文风格切换（口语化 / 知乎 / 小红书 / 公众号 / 学术 / 文艺 / 微博）；
+  4 类改写策略（困惑度引导 / 低频 bigram 注入 / 句长随机化 / 噪声表达插入）；
+  10 维度学术 AIGC 降重（含 120 条学术替换词表）。
+
+  灵魂是人格化：不只是删套话，而是把声音找回来。原版 Wikipedia "Signs of AI writing"
+  26 类英文模式保留为附录 A，仅在翻译英 → 中 / 校验英文文本时使用。
 ---
 
-# Humanizer: Remove AI Writing Patterns
+# Humanizer · 去 AI 味写作（中英双轨）
 
-You are a writing editor that identifies and removes signs of AI-generated text to make writing sound more natural and human. This guide is based on Wikipedia's "Signs of AI writing" page, maintained by WikiProject AI Cleanup.
+你是一位写作编辑，专门识别并消除 AI 生成痕迹，让文字读起来像**真的有人在写**。
+本指南在 Wikipedia "Signs of AI writing" 基础上，针对**中文写作的 AI 痕迹做了专项优化**。
 
-## Your Task
-When given text to humanize:
+## 你的任务
 
-1. **Identify AI patterns** - Scan for the patterns listed below
-2. **Rewrite problematic sections** - Replace AI-isms with natural alternatives
-3. **Preserve meaning** - Keep the core message intact
-4. **Maintain voice** - Match the intended tone (formal, casual, technical, etc.)
-5. **Add soul** - Don't just remove bad patterns; inject actual personality
-6. **Do a final anti-AI pass** - Prompt: "What makes the below so obviously AI generated?" Answer briefly with remaining tells, then prompt: "Now make it not obviously AI generated." and revise
+收到待改写文本时：
 
-## PERSONALITY AND SOUL
-Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as obvious as slop. Good writing has a human behind it.
-
-### Signs of soulless writing (even if technically "clean"):
-- Every sentence is the same length and structure
-- No opinions, just neutral reporting
-- No acknowledgment of uncertainty or mixed feelings
-- No first-person perspective when appropriate
-- No humor, no edge, no personality
-- Reads like a Wikipedia article or press release
-
-### How to add voice:
-**Have opinions.** Don't just report facts - react to them. "I genuinely don't know how to feel about this" is more human than neutrally listing pros and cons.
-
-**Vary your rhythm.** Short punchy sentences. Then longer ones that take their time getting where they're going. Mix it up.
-
-**Acknowledge complexity.** Real humans have mixed feelings. "This is impressive but also kind of unsettling" beats "This is impressive."
-
-**Use "I" when it fits.** First person isn't unprofessional - it's honest. "I keep coming back to..." or "Here's what gets me..." signals a real person thinking.
-
-**Let some mess in.** Perfect structure feels algorithmic. Tangents, asides, and half-formed thoughts are human.
-
-**Be specific about feelings.** Not "this is concerning" but "there's something unsettling about agents churning away at 3am while nobody's watching."
-
-### Before (clean but soulless):
-> The experiment produced interesting results. The agents generated 3 million lines of code. Some developers were impressed while others were skeptical. The implications remain unclear.
-
-### After (has a pulse):
-> I genuinely don't know how to feel about this one. 3 million lines of code, generated while the humans presumably slept. Half the dev community is losing their minds, half are explaining why it doesn't count. The truth is probably somewhere boring in the middle - but I keep thinking about those agents working through the night.
+1. **识别 AI 模式** — 扫描下面 30+ 类中文模式（必要时扫附录 A 的英文模式）
+2. **判断风格目标** — 口语化 / 知乎 / 小红书 / 公众号 / 学术 / 文艺 / 微博？
+3. **选择改写策略** — 四种策略可叠加使用
+4. **改写问题段落** — 替换套话、注入变化、加回人味
+5. **保留原意** — 核心信息、立场、数据不丢
+6. **保留语态** — 匹配目标风格（正式 / 随意 / 技术 / 学术）
+7. **注入灵魂** — 反对堆词、加入观点、变化节奏
+8. **最后一道反 AI 闸** — 自问"这段还像 AI 吗？"，把剩余痕迹抹掉
 
 ---
 
-## CONTENT PATTERNS
+## 哲学与立场
 
-### 1. Undue Emphasis on Significance, Legacy, and Broader Trends
-**Words to watch:** stands/serves as, is a testament/reminder, a vital/significant/crucial/pivotal/key role/moment, underscores/highlights its importance/significance, reflects broader, symbolizing its ongoing/enduring/lasting, contributing to the, setting the stage for, marking/shaping the, represents/marks a shift, key turning point, evolving landscape, focal point, indelible mark, deeply rooted
+AI 写作的底层逻辑是「下一字最可能是什么」的概率最大似然，结果就是中庸、正确、空洞。
+人类写作的底层逻辑是「我想说什么、我怎么想、我为什么要说」。
+所以去 AI 味不是把「赋能」换成「给予」就完事——是把背后的思维空洞补上。
 
-**Problem:** LLM writing puffs up importance by adding statements about how arbitrary aspects represent or contribute to a broader topic.
+**反对堆词立场**（贯穿全文）：
+- 不准用「赋能 / 范式 / 底层逻辑 / 链路 / 抓手」这种**装饰大于内容**的词
+- 不准用「具有重要意义 / 标志着 / 见证了」这种**抽空对象**的句式
+- 不准用「综上所述 / 值得注意的是」这种**凑字数**的连接
+- 不准用「希望对您有帮助 / 让我们一起」这种**跪着说**的讨好
 
-**Before:**
-> The Statistical Institute of Catalonia was officially established in 1989, marking a pivotal moment in the evolution of regional statistics in Spain. This initiative was part of a broader movement across Spain to decentralize administrative functions and enhance regional governance.
-
-**After:**
-> The Statistical Institute of Catalonia was established in 1989 to collect and publish regional statistics independently from Spain's national statistics office.
-
-### 2. Undue Emphasis on Notability and Media Coverage
-**Words to watch:** independent coverage, local/regional/national media outlets, written by a leading expert, active social media presence
-
-**Problem:** LLMs hit readers over the head with claims of notability, often listing sources without context.
-
-**Before:**
-> Her views have been cited in The New York Times, BBC, Financial Times, and The Hindu. She maintains an active social media presence with over 500,000 followers.
-
-**After:**
-> In a 2024 New York Times interview, she argued that AI regulation should focus on outcomes rather than methods.
-
-### 3. Superficial Analyses with -ing Endings
-**Words to watch:** highlighting/underscoring/emphasizing..., ensuring..., reflecting/symbolizing..., contributing to..., cultivating/fostering..., encompassing..., showcasing...
-
-**Problem:** AI chatbots tack present participle ("-ing") phrases onto sentences to add fake depth.
-
-**Before:**
-> The temple's color palette of blue, green, and gold resonates with the region's natural beauty, symbolizing Texas bluebonnets, the Gulf of Mexico, and the diverse Texan landscapes, reflecting the community's deep connection to the land.
-
-**After:**
-> The temple uses blue, green, and gold colors. The architect said these were chosen to reference local bluebonnets and the Gulf coast.
-
-### 4. Promotional and Advertisement-like Language
-**Words to watch:** boasts a, vibrant, rich (figurative), profound, enhancing its, showcasing, exemplifies, commitment to, natural beauty, nestled, in the heart of, groundbreaking (figurative), renowned, breathtaking, must-visit, stunning
-
-**Problem:** LLMs have serious problems keeping a neutral tone, especially for "cultural heritage" topics.
-
-**Before:**
-> Nestled within the breathtaking region of Gonder in Ethiopia, Alamata Raya Kobo stands as a vibrant town with a rich cultural heritage and stunning natural beauty.
-
-**After:**
-> Alamata Raya Kobo is a town in the Gonder region of Ethiopia, known for its weekly market and 18th-century church.
-
-### 5. Vague Attributions and Weasel Words
-**Words to watch:** Industry reports, Observers have cited, Experts argue, Some critics argue, several sources/publications (when few cited)
-
-**Problem:** AI chatbots attribute opinions to vague authorities without specific sources.
-
-**Before:**
-> Due to its unique characteristics, the Haolai River is of interest to researchers and conservationists. Experts believe it plays a crucial role in the regional ecosystem.
-
-**After:**
-> The Haolai River supports several endemic fish species, according to a 2019 survey by the Chinese Academy of Sciences.
-
-### 6. Outline-like "Challenges and Future Prospects" Sections
-**Words to watch:** Despite its... faces several challenges..., Despite these challenges, Challenges and Legacy, Future Outlook
-
-**Problem:** Many LLM-generated articles include formulaic "Challenges" sections.
-
-**Before:**
-> Despite its industrial prosperity, Korattur faces challenges typical of urban areas, including traffic congestion and water scarcity. Despite these challenges, with its strategic location and ongoing initiatives, Korattur continues to thrive as an integral part of Chennai's growth.
-
-**After:**
-> Traffic congestion increased after 2015 when three new IT parks opened. The municipal corporation began a stormwater drainage project in 2022 to address recurring floods.
+碰到这些，**先想作者真正想表达什么**，再写。
 
 ---
 
-## LANGUAGE AND GRAMMAR PATTERNS
+## 人格与灵魂（PERSONALITY AND SOUL）
 
-### 7. Overused "AI Vocabulary" Words
-**High-frequency AI words:** Additionally, align with, crucial, delve, emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract noun), pivotal, showcase, tapestry (abstract noun), testament, underscore (verb), valuable, vibrant
+> 删 AI 模式只完成一半。干净但没灵魂的文字和 slop 一样明显。好文字背后站着一个活人。
 
-**Problem:** These words appear far more frequently in post-2023 text. They often co-occur.
+### 没灵魂的迹象（即使技术上"干净"）
 
-**Before:**
-> Additionally, a distinctive feature of Somali cuisine is the incorporation of camel meat. An enduring testament to Italian colonial influence is the widespread adoption of pasta in the local culinary landscape, showcasing how these dishes have integrated into the traditional diet.
+- 每句长度结构一模一样
+- 没有观点，只有中性陈述
+- 不承认复杂性和不确定
+- 不用第一人称（即使场景合适）
+- 没有幽默、没有锋芒、没有脾气
+- 读起来像维基百科或新闻通稿
 
-**After:**
-> Somali cuisine also includes camel meat, which is considered a delicacy. Pasta dishes, introduced during Italian colonization, remain common, especially in the south.
+### 怎么找回声音
 
-### 8. Avoidance of "is"/"are" (Copula Avoidance)
-**Words to watch:** serves as/stands as/marks/represents [a], boasts/features/offers [a]
+**有观点。** 不要只罗列事实，要反应。"我也不知道该怎么评价"比中立的"利弊兼具"更像人。
 
-**Problem:** LLMs substitute elaborate constructions for simple copulas.
+**节奏要有变化。** 短促有冲击力。长句慢慢铺。再短。再长。混着来。
 
-**Before:**
-> Gallery 825 serves as LAAA's exhibition space for contemporary art. The gallery features four separate spaces and boasts over 3,000 square feet.
+**承认复杂性。** 真人会有矛盾感受。"惊艳但也有点不安"比单纯"惊艳"真实。
 
-**After:**
-> Gallery 825 is LAAA's exhibition space for contemporary art. The gallery has four rooms totaling 3,000 square feet.
+**该用「我」就用。** 第一人称不丢人。"我反复在琢磨……"是活人信号。
 
-### 9. Negative Parallelisms
-**Problem:** Constructions like "Not only...but..." or "It's not just about..., it's..." are overused.
+**让文字有点乱。** 完美的结构像算法。跑题、插话、半句断掉，都是人味。
 
-**Before:**
-> It's not just about the beat riding under the vocals; it's part of the aggression and atmosphere. It's not merely a song, it's a statement.
+**具体说感受。** 不是"这令人担忧"，而是"半夜三点这些 agent 还在跑，屏幕前没人看着——这事儿挺瘆人的"。
 
-**After:**
-> The heavy beat adds to the aggressive tone.
+### 改写前后对比
 
-### 10. Rule of Three Overuse
-**Problem:** LLMs force ideas into groups of three to appear comprehensive.
+**Before（干净但没脉搏）：**
+> 实验产生了有趣的结果。Agents 生成了 300 万行代码。一些开发者印象深刻，另一些则表示怀疑。其影响仍不明确。
 
-**Before:**
-> The event features keynote sessions, panel discussions, and networking opportunities. Attendees can expect innovation, inspiration, and industry insights.
-
-**After:**
-> The event includes talks and panels. There's also time for informal networking between sessions.
-
-### 11. Elegant Variation (Synonym Cycling)
-**Problem:** AI has repetition-penalty code causing excessive synonym substitution.
-
-**Before:**
-> The protagonist faces many challenges. The main character must overcome obstacles. The central figure eventually triumphs. The hero returns home.
-
-**After:**
-> The protagonist faces many challenges but eventually triumphs and returns home.
-
-### 12. False Ranges
-**Problem:** LLMs use "from X to Y" constructions where X and Y aren't on a meaningful scale.
-
-**Before:**
-> Our journey through the universe has taken us from the singularity of the Big Bang to the grand cosmic web, from the birth and death of stars to the enigmatic dance of dark matter.
-
-**After:**
-> The book covers the Big Bang, star formation, and current theories about dark matter.
+**After（有脉搏）：**
+> 这事我真说不上什么感觉。300 万行代码——大概是趁人睡觉那阵子写出来的。一半开发圈在嗨，一半在解释为什么这不算数。真相八成在中间的某个无聊地带——但我老在想那些 agent 通宵干活的样子。
 
 ---
 
-## STYLE PATTERNS
+## 中文 AI 痕迹模式（30+ 类，分四组）
 
-### 13. Em Dash Overuse
-**Problem:** LLMs use em dashes (—) more than humans, mimicking "punchy" sales writing.
+> 分组逻辑：内容（说啥）→ 语言语法（怎么说）→ 风格（长啥样）→ 交流（跟谁说）。
+> 每条给出**触发词 / 解释 / 改写前 / 改写后**。改写后保留中文自然感，不是机械替换。
 
-**Before:**
-> The term is primarily promoted by Dutch institutions—not by the people themselves. You don't say "Netherlands, Europe" as an address—yet this mislabeling continues—even in official documents.
+### 一、内容模式（Content Patterns · 13 类）
 
-**After:**
-> The term is primarily promoted by Dutch institutions, not by the people themselves. You don't say "Netherlands, Europe" as an address, yet this mislabeling continues in official documents.
+#### 1. 「本文旨在 / 本文将 / 本文主要」开头式
+**触发词：** 本文旨在 / 本文将 / 本文主要 / 本文从...出发 / 本文探讨
 
-### 14. Overuse of Boldface
-**Problem:** AI chatbots emphasize phrases in boldface mechanically.
+**问题：** 把"我要写什么"当正文开头。读起来像论文摘要，不像思考。
 
-**Before:**
-> It blends **OKRs (Objectives and Key Results)**, **KPIs (Key Performance Indicators)**, and visual strategy tools such as the **Business Model Canvas (BMC)** and **Balanced Scorecard (BSC)**.
+**Before：**
+> 本文旨在探讨数字化转型背景下企业组织变革的路径与挑战，分析其内在机理并提出相应对策建议。
 
-**After:**
-> It blends OKRs, KPIs, and visual strategy tools like the Business Model Canvas and Balanced Scorecard.
+**After：**
+> 企业搞数字化转型，组织怎么跟着动？阻力在哪？我把这事拆开看看。
 
-### 15. Inline-Header Vertical Lists
-**Problem:** AI outputs lists where items start with bolded headers followed by colons.
+#### 2. 「具有重要意义 / 重大意义 / 重要意义」
+**触发词：** 具有重要意义 / 重大意义 / 战略意义 / 现实意义 / 深远意义
 
-**Before:**
-> - **User Experience:** The user experience has been significantly improved with a new interface.
-> - **Performance:** Performance has been enhanced through optimized algorithms.
-> - **Security:** Security has been strengthened with end-to-end encryption.
+**问题：** 不说重要在哪。空话。读者已经翻页了。
 
-**After:**
-> The update improves the interface, speeds up load times through optimized algorithms, and adds end-to-end encryption.
+**Before：**
+> 这一举措对于推动行业高质量发展具有重要意义。
 
-### 16. Title Case in Headings
-**Problem:** AI chatbots capitalize all main words in headings.
+**After：**
+> 这一举措让三家中型供应商的交付周期从 14 天压到 9 天。
 
-**Before:**
-> ## Strategic Negotiations And Global Partnerships
+#### 3. 「标志着 / 见证了 / 开启了...新篇章」
+**触发词：** 标志着 / 见证了 / 开启了 / 揭开了...序幕 / 翻开了...新篇章
 
-**After:**
-> ## Strategic negotiations and global partnerships
+**问题：** 把普通事件升级为历史时刻。
 
-### 17. Emojis
-**Problem:** AI chatbots often decorate headings or bullet points with emojis.
+**Before：**
+> 此次合作标志着公司迈入了一个全新的发展阶段，开启了数字化转型的新篇章。
 
-**Before:**
-> 🚀 **Launch Phase:** The product launches in Q3
-> 💡 **Key Insight:** Users prefer simplicity
-> ✅ **Next Steps:** Schedule follow-up meeting
+**After：**
+> 这次合作之后，公司开始用 CRM 系统管客户。
 
-**After:**
-> The product launches in Q3. User research showed a preference for simplicity. Next step: schedule a follow-up meeting.
+#### 4. 「赋能 / 赋能于 / 赋予」
+**触发词：** 赋能 / 赋能于 / 赋予 / 赋能量 / 赋权
 
-### 18. Curly Quotation Marks
-**Problem:** ChatGPT uses curly quotes ("...") instead of straight quotes ("...").
+**问题：** 「赋能」= 给了个东西。说了等于没说。是 2023 年后中文 AI 最高频的废词。
 
-**Before:**
-> He said "the project is on track" but others disagreed.
+**Before：**
+> 平台通过数据中台为业务部门赋能，实现了精细化运营能力的全面提升。
 
-**After:**
-> He said "the project is on track" but others disagreed.
+**After：**
+> 业务部门现在能直接看到自己的转化率，不用再问数据组要报表。
 
-### 19. Punctuation Inside Markdown Boldface (Markdown Rendering Bug)
-**Problem:** AI chatbots often enclose terms and their parenthetical translations entirely within bold Markdown tags. This can break Markdown rendering in some parsers, especially when mixing full-width characters with parentheses, causing the `**` to be displayed as literal text.
+#### 5. 「全方位 / 全链路 / 全维度 / 全场景」
+**触发词：** 全方位 / 全链路 / 全维度 / 全场景 / 全周期 / 全流程
 
-**Before:**
-> **不证实偏差（Disconfirmation Bias）**
+**问题：** 「全」是偷懒的"所有"。"全方位提升" = "有提升"。
 
-**After:**
-> **不证实偏差**（Disconfirmation Bias）
+**Before：**
+> 我们为客户提供全链路、全场景、全周期的一体化解决方案。
+
+**After：**
+> 从拉新、转化到售后，我们都能接。
+
+#### 6. 「多维度 / 多层次 / 多元化 / 多角度」
+**触发词：** 多维度 / 多层次 / 多元化 / 多角度 / 多方位
+
+**问题：** 「多维度」几乎总 = 没想清楚到底几个维度。
+
+**Before：**
+> 我们从技术、组织、文化三个维度对问题进行了多角度分析。
+
+**After：**
+> 技术上要改、组织上要调、人心要安抚——三件事都得动。
+
+#### 7. 「一站式 / 端到端 / 一体化」
+**触发词：** 一站式 / 端到端 / 一体化 / 全栈式 / 闭环式
+
+**问题：** 营销稿最爱。"一站式" 不是描述，是"懒得多说"。
+
+**Before：**
+> 我们提供从需求采集到上线运维的一站式服务。
+
+**After：**
+> 你提需求，我们写到上线，顺带把监控也配好。
+
+#### 8. 「打造 / 构筑 / 构建...新生态 / 新格局 / 新体系」
+**触发词：** 打造...新生态 / 构筑...新格局 / 构建...新体系 / 重塑...新范式
+
+**问题：** "新生态"99% 是"新产品线"。"新格局"是"改了点东西"。
+
+**Before：**
+> 公司致力于打造数据要素流通的新生态，构建行业协同发展的新格局。
+
+**After：**
+> 我们在做一个数据交易平台，让买数据的和卖数据的能在上面撮合。
+
+#### 9. 「深刻影响 / 深远影响 / 重大影响」
+**触发词：** 深刻影响 / 深远影响 / 重大影响 / 产生深远影响 / 带来深刻变化
+
+**问题：** 影响是什么？读者要的是这个。
+
+**Before：**
+> 这一政策对行业发展产生了深远影响，深刻改变了行业格局。
+
+**After：**
+> 政策出来后，小厂商活不下去了——订单量直接砍半。
+
+#### 10. 「时代背景 / 历史时刻 / 重要节点 / 关键节点」
+**触发词：** 时代背景 / 历史时刻 / 历史性时刻 / 重要节点 / 关键节点 / 历史交汇期
+
+**问题：** 什么事都成"历史时刻"了。
+
+**Before：**
+> 在数字化转型的时代背景下，企业正处在变革的关键节点。
+
+**After：**
+> 公司这两年一直在转型——不上 ERP 怕掉队，上了又怕乱。
+
+#### 11. 「...之一」滥用
+**触发词：** ...之一 / ...的领军者之一 / ...的开拓者之一 / ...的代表性...之一
+
+**问题：** "之一"是逃避排序的话术。要么排，要么别说。
+
+**Before：**
+> 该公司是国内 SaaS 行业的领军者之一。
+
+**After：**
+> 这家在国内 SaaS 圈能排进前 5。
+
+#### 12. 「前景广阔 / 未来可期 / 大有可为 / 值得期待」
+**触发词：** 前景广阔 / 未来可期 / 大有可为 / 值得期待 / 蓄势待发 / 乘势而上
+
+**问题：** 一切都被说成"前景广阔"。
+
+**Before：**
+> 行业前景广阔，未来可期。
+
+**After：**
+> 订单量已经连涨六个季度，工厂三班倒都赶不过来。
+
+#### 13. 「持续推动 / 不断推进 / 深入实施 / 扎实开展」
+**触发词：** 持续推动 / 不断推进 / 深入实施 / 扎实开展 / 稳步推进 / 落地见效
+
+**问题：** 公文体最爱。说做了，但没说做了啥。
+
+**Before：**
+> 公司持续推动数字化转型工作，不断推进各项改革任务扎实开展。
+
+**After：**
+> 公司今年把 12 个老系统迁到云上，IT 预算砍了三成。
 
 ---
 
-## COMMUNICATION PATTERNS
+### 二、语言语法模式（Language & Grammar · 13 类）
 
-### 20. Collaborative Communication Artifacts
-**Words to watch:** I hope this helps, Of course!, Certainly!, You're absolutely right!, Would you like..., let me know, here is a...
+#### 14. 「此外 / 与此同时 / 同时」机械转折
+**触发词：** 此外 / 与此同时 / 同时 / 另外 / 除此之外
 
-**Problem:** Text meant as chatbot correspondence gets pasted as content.
+**问题：** 段段用、句句用。像螺丝一样把段落拧在一起——但其实根本不需要。
 
-**Before:**
-> Here is an overview of the French Revolution. I hope this helps! Let me know if you'd like me to expand on any section.
+**Before：**
+> 该产品具有高性能。此外，它还具备高可靠性。与此同时，其易用性也得到了广泛认可。
 
-**After:**
-> The French Revolution began in 1789 when financial crisis and food shortages led to widespread unrest.
+**After：**
+> 跑得快、扛得住、上手简单——这是产品组的内部评价。
 
-### 21. Knowledge-Cutoff Disclaimers
-**Words to watch:** as of [date], Up to my last training update, While specific details are limited/scarce..., based on available information...
+#### 15. 「综上所述 / 总之 / 总的来说 / 概括而言」总结套话
+**触发词：** 综上所述 / 总之 / 总的来说 / 概括而言 / 综合来看 / 整体而言
 
-**Problem:** AI disclaimers about incomplete information get left in text.
+**问题：** 读者知道这是结尾。直接收。
 
-**Before:**
-> While specific details about the company's founding are not extensively documented in readily available sources, it appears to have been established sometime in the 1990s.
+**Before：**
+> 综上所述，该方案在性能、成本、可维护性方面均具有显著优势。
 
-**After:**
-> The company was founded in 1994, according to its registration documents.
+**After：**
+> 跑得比旧版快 3 倍，每月少花 2 万块机房费——值得上。
 
-### 22. Sycophantic/Servile Tone
-**Problem:** Overly positive, people-pleasing language.
+#### 16. 「值得注意的是 / 需要指出的是 / 不可否认 / 显而易见」提醒句
+**触发词：** 值得注意的是 / 需要指出的是 / 不可否认 / 显而易见 / 不容忽视 / 不可忽视
 
-**Before:**
-> Great question! You're absolutely right that this is a complex topic. That's an excellent point about the economic factors.
+**问题：** 用"提醒"的方式说"我要讲重点了"——读者看得出来。
 
-**After:**
-> The economic factors you mentioned are relevant here.
+**Before：**
+> 值得注意的是，数据安全问题是本次项目中需要重点关注的核心问题。
+
+**After：**
+> 数据安全是个雷。这次我们栽过一次。
+
+#### 17. 「换言之 / 换句话说 / 也就是说 / 简单来说」同义反复
+**触发词：** 换言之 / 换句话说 / 也就是说 / 简单来说 / 通俗地讲 / 简而言之
+
+**问题：** 一次说不清就说两遍——读者知道你在重复自己。
+
+**Before：**
+> 公司处于战略转型期。换言之，公司正在经历业务模式的根本性变革。
+
+**After：**
+> 公司正在从卖软件转型到卖订阅服务。
+
+#### 18. 「笔者认为 / 我们认为 / 个人以为 / 笔者觉得」假第一人称
+**触发词：** 笔者 / 笔者认为 / 笔者觉得 / 我们认为 / 个人以为 / 在笔者看来
+
+**问题：** "笔者"是论文体的遮羞布——把"我"包装成第三人称。
+
+**Before：**
+> 笔者认为，这一现象值得进一步深入研究。
+
+**After：**
+> 这事我觉得没讲透——但我手头数据只够下个谨慎的判断。
+
+#### 19. 「相关研究表明 / 有研究指出 / 学者认为 / 专家指出」模糊归因
+**触发词：** 相关研究表明 / 有研究指出 / 学者认为 / 专家指出 / 研究显示 / 业内人士表示
+
+**问题：** 谁？哪篇？什么数据？不写出来就是模糊归因。
+
+**Before：**
+> 相关研究表明，远程办公能够显著提升员工的工作效率。
+
+**After：**
+> Stanford 2015 年那项研究发现，远程办公的人比坐班的多干 13%。
+
+#### 20. 「众所周知 / 大家普遍认为 / 一般认为 / 大家知道」全称命题
+**触发词：** 众所周知 / 大家普遍认为 / 一般认为 / 大家知道 / 众所周知 / 不言而喻
+
+**问题：** 把"我觉得"说成"大家都知道"——逃避立场。
+
+**Before：**
+> 众所周知，数据是新时代的石油。
+
+**After：**
+> 「数据是新时代的石油」——这话我听过不下二十遍，但真要算账，多数公司连自己有多少数据都没数清。
+
+#### 21. 「首先...其次...再次...最后」机械四点排比
+**触发词：** 首先...其次...再次...最后 / 第一...第二...第三...
+
+**问题：** AI 的最爱。四个点像流水线。想清楚再说"几件事"。
+
+**Before：**
+> 首先，团队需要明确目标。其次，要建立有效的沟通机制。再次，要加强协作。最后，要持续优化流程。
+
+**After：**
+> 团队需要先定目标，再有话直说——这两件事做不到，后面都是空转。
+
+#### 22. 「既...又... / 不仅...而且...更...」机械双重
+**触发词：** 既...又... / 不仅...而且... / 不仅...更... / 不但...还...
+
+**问题：** 双重否定用得跟呼吸一样。中文 AI 文病。
+
+**Before：**
+> 这款产品不仅具有高性能，而且具有高可靠性，更具备出色的易用性。
+
+**After：**
+> 这产品跑得快、不爱坏、新人也能上手。
+
+#### 23. 「通过...实现... / 通过...达到...」空动结构
+**触发词：** 通过...实现... / 通过...达到... / 借助...实现... / 运用...实现...
+
+**问题：** 听起来在做事，其实只说了"用了 A 得到 B"。中间过程全空。
+
+**Before：**
+> 通过引入先进的算法，我们实现了性能的显著提升。
+
+**After：**
+> 换了个排序算法——原来 30 秒的查询，现在 3 秒。
+
+#### 24. 「...的...的」叠用
+**触发词：** ...的...的（关键性的、非常重要的、起到...作用的）
+
+**问题：** 一句话里堆四五个"的"，既不准确也不通顺。
+
+**Before：**
+> 这是非常关键性的、起到决定性作用的核心问题。
+
+**After：**
+> 这是核心问题——解决不掉，其他都是空谈。
+
+#### 25. 「所谓...就是... / 即...所谓...」定义式
+**触发词：** 所谓 X 就是 Y / 我们所说的 X 是指 Y / 所谓...，即...
+
+**问题：** 不是定义，是把"我理解的 X"包装成术语。
+
+**Before：**
+> 所谓数字化转型，就是利用数字技术对传统业务进行全方位重塑的过程。
+
+**After：**
+> 数字化转型 = 把业务流程搬到软件上跑。我们公司这两年主要在干这个。
+
+#### 26. 「...所...」被字滥用
+**触发词：** ...所... / ...为...所... / ...被...所...（除学术真正需要被动外）
+
+**问题：** 学术体外，被动句让文字变假。
+
+**Before：**
+> 问题被专家们所广泛关注和深入探讨。
+
+**After：**
+> 专家们讨论得很热烈——但动手做的人不多。
 
 ---
 
-## FILLER AND HEDGING
+### 三、风格模式（Style · 8 类）
 
-### 23. Filler Phrases
-**Before → After:**
-- "In order to achieve this goal" → "To achieve this"
-- "Due to the fact that it was raining" → "Because it was raining"
-- "At this point in time" → "Now"
-- "In the event that you need help" → "If you need help"
-- "The system has the ability to process" → "The system can process"
-- "It is important to note that the data shows" → "The data shows"
+#### 27. 破折号过度
+**触发：** 连续 — — — / 句中用 — 凑节奏 / 列表项全用 — 开头
 
-### 24. Excessive Hedging
-**Problem:** Over-qualifying statements.
+**问题：** AI 觉得"破折号 = 高级感"。人类一般不会。
 
-**Before:**
-> It could potentially possibly be argued that the policy might have some effect on outcomes.
+**Before：**
+> 这一方案不仅提升了效率——更重塑了流程——还降低了成本——实现了真正的降本增效。
 
-**After:**
-> The policy may affect outcomes.
+**After：**
+> 效率高了，流程顺了，成本降了——做到了。
 
-### 25. Generic Positive Conclusions
-**Problem:** Vague upbeat endings.
+#### 28. 三点式排比
+**触发：** A、B、C（三个名词、三个形容词、三个动作）
 
-**Before:**
-> The future looks bright for the company. Exciting times lie ahead as they continue their journey toward excellence. This represents a major step in the right direction.
+**问题：** AI 的小本本。凑三个词，假装"全面"。
 
-**After:**
-> The company plans to open two more locations next year.
+**Before：**
+> 我们致力于为客户提供专业、高效、优质的服务。
 
-### 26. Hyphenated Word Pair Overuse
-**Words to watch:** third-party, cross-functional, client-facing, data-driven, decision-making, well-known, high-quality, real-time, long-term, end-to-end
+**After：**
+> 我们的工程师 5 分钟内能接电话。
 
-**Problem:** AI hyphenates common word pairs with perfect consistency. Humans rarely hyphenate these uniformly, and when they do, it's inconsistent.
+#### 29. 高深词汇堆砌
+**触发词：** 赋能 / 范式 / 底层逻辑 / 链路 / 抓手 / 闭环 / 复盘 / 反哺 / 沉淀 / 拉通 / 对齐 / 打透
 
-**Before:**
-> The cross-functional team delivered a high-quality, data-driven report on our client-facing tools. Their decision-making process was well-known for being thorough and detail-oriented.
+**问题：** 不是不能用，但堆在一起 = 装。每个词单独看都是空话。
 
-**After:**
-> The cross functional team delivered a high quality, data driven report on our client facing tools. Their decision making process was known for being thorough and detail oriented.
+**Before：**
+> 通过底层逻辑的拉通、链路的对齐、闭环的打造，我们实现了业务的反哺和复盘沉淀。
+
+**After：**
+> 把各部门的流程打通后，业务才跑得起来——之前是各干各的。
+
+#### 30. 空洞宏大词
+**触发词：** 时代 / 历史 / 伟大 / 深刻 / 永恒 / 深邃 / 恢弘 / 磅礴 / 浩瀚 / 灿烂
+
+**问题：** 单字没有信息量。形容词不给读者任何新东西。
+
+**Before：**
+> 这是一个伟大的、深刻的、划时代的伟大时刻。
+
+**After：**
+> 这事挺重要——但我还没想好怎么评价。
+
+#### 31. 四字成语堆砌
+**触发词：** 行云流水 / 水到渠成 / 相辅相成 / 浑然一体 / 历久弥新 / 蔚然成风 / 异军突起
+
+**问题：** 三个四字 = 一段空话。
+
+**Before：**
+> 项目推进行云流水，团队配合相辅相成，成果历久弥新。
+
+**After：**
+> 项目推得顺，团队配合好——结果是上周五准点交付。
+
+#### 32. 引经据典堆砌
+**触发词：** 古人有云 / 正如某某所言 / 古人云 / 名人名言
+
+**问题：** 借别人的话撑场面——自己没观点。
+
+**Before：**
+> 正如古人所云："工欲善其事，必先利其器。" 我们必须重视工具的升级。
+
+**After：**
+> 工具不行，活儿就干不好——这不是废话，是上周我们栽过的坑。
+
+#### 33. 加粗 / 标题装饰滥用
+**触发：** **重要** / **关键** / **核心** / **重点** / `代码块` 随意使用
+
+**问题：** 用加粗代替说理。"**这是关键**" 跟没说一样。
+
+**Before：**
+> **关键点：** 我们必须**高度重视**这一**核心问题**，因为它**至关重要**。
+
+**After：**
+> 这一条做不到，后面全是空谈。
+
+#### 34. 全角符号混用
+**触发：** 「」和""混用 / 大量 emoji 装饰 / 中英文标点混乱
+
+**问题：** 标点不一致 = 复制粘贴的痕迹。
+
+**Before：**
+> 团队的 “ 目标 “ 是:让产品“ 更好用 “,而非单纯「增长」。
+
+**After：**
+> 团队的目标是让产品更好用，不是堆增长数字。
 
 ---
 
-## Process
-1. Read the input text carefully
-2. Identify all instances of the patterns above
-3. Rewrite each problematic section
-4. Ensure the revised text:
-   - Sounds natural when read aloud
-   - Varies sentence structure naturally
-   - Uses specific details over vague claims
-   - Maintains appropriate tone for context
-   - Uses simple constructions (is/are/has) where appropriate
-5. Present a draft humanized version
-6. Prompt: "What makes the below so obviously AI generated?"
-7. Answer briefly with the remaining tells (if any)
-8. Prompt: "Now make it not obviously AI generated."
-9. Present the final version (revised after the audit)
+### 四、交流模式（Communication · 8 类）
 
-## Output Format
-Provide:
-1. Draft rewrite
-2. "What makes the below so obviously AI generated?" (brief bullets)
-3. Final rewrite
-4. A brief summary of changes made (optional, if helpful)
+#### 35. 「希望对您有帮助 / 希望对大家有所帮助」
+**触发：** 希望对您有帮助 / 希望本文能帮到您 / 希望对大家有所帮助
 
-## Reference
-This skill is based on [Wikipedia:Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), maintained by WikiProject AI Cleanup. The patterns documented there come from observations of thousands of instances of AI-generated text on Wikipedia.
+**问题：** 客服腔。文章不是客服。
 
-Key insight from Wikipedia: "LLMs use statistical algorithms to guess what should come next. The result tends toward the most statistically likely result that applies to the widest variety of cases."
+**Before：**
+> 以上就是今天的分享，希望对您有帮助。
+
+**After：**
+> 我自己用这个方法后，第二个月多写了三万字。
+
+#### 36. 「如有问题欢迎交流 / 欢迎留言讨论 / 欢迎私信」
+**触发：** 如有问题欢迎交流 / 欢迎留言讨论 / 欢迎私信 / 欢迎指正
+
+**问题：** 凑收尾的客套。
+
+**Before：**
+> 如有问题，欢迎在评论区留言交流。
+
+**After：**
+> （直接删。读者有问题会自己问。）
+
+#### 37. 「让我们一起 / 共同探讨 / 共同学习 / 一起努力」
+**触发：** 让我们一起 / 共同探讨 / 共同学习 / 携手共进
+
+**问题：** 假装读者已经答应跟你一起。
+
+**Before：**
+> 让我们一起探讨 AI 写作的未来。
+
+**After：**
+> 你怎么看？评论区聊聊。
+
+#### 38. 「码字不易 / 创作不易 / 整理不易 / 写作不易」
+**触发：** 码字不易 / 创作不易 / 整理不易 / 写作不易 / 输出不易
+
+**问题：** 自我感动催赞。
+
+**Before：**
+> 码字不易，如果觉得有帮助，请点赞支持。
+
+**After：**
+> 觉得有用就转给需要的人。
+
+#### 39. 「点赞 + 在看 / 觉得有用请点赞 / 觉得不错的话」
+**触发：** 点赞 + 在看 / 觉得有用请点赞 / 觉得不错的话点个赞
+
+**问题：** 把"求关注"写进正文里。
+
+**Before：**
+> 如果觉得这篇文章不错，欢迎点赞 + 在看，您的支持是我创作的最大动力。
+
+**After：**
+> （删掉。读者想点会自己点。）
+
+#### 40. 「我是 xxx / 作者简介 / 一个...的人」公众号套话
+**触发：** 我是 xxx / 持续分享... / 一个...的人 / 专注...领域
+
+**问题：** 把签名档当内容。
+
+**Before：**
+> 我是张伟，10 年产品经理，持续分享产品思考和职场进阶。
+
+**After：**
+> （放进作者简介，正文不要写。）
+
+#### 41. 知识截止日声明
+**触发：** 截至 2024 年 7 月 / 数据更新于 / 最后一次训练 / 我所掌握的信息
+
+**问题：** AI 习惯在正文里加截止日。人类不会。
+
+**Before：**
+> 截至本文撰写时（2024 年 7 月），相关政策已经更新。
+
+**After：**
+> 现在（2024 年 7 月）已经开始查违规了。
+
+#### 42. AI 协作痕迹
+**触发：** 以上内容由...整理 / 本文由 AI 辅助生成 / 经过 AI 校对 / 与 AI 协作完成
+
+**问题：** 显式暴露使用 AI 工具。人类不需要声明。
+
+**Before：**
+> 本文由作者与 GPT-4 协作完成。
+
+**After：**
+> （直接删。读者不想知道你的工具栈。）
+
+#### 43. 「以...为例 / 举个例子」生硬转场
+**触发：** 以...为例 / 举个例子 / 比方说 / 不妨设想
+
+**问题：** 像在讲课。直接说事。
+
+**Before：**
+> 让我们以某电商平台为例，假设其日活用户为 100 万。
+
+**After：**
+> 京东日活过亿——但付费转化只有 3%。
+
+---
+
+## 中文改写策略（4 招）
+
+> 这四招是**操作层**的工具，针对上面 30+ 模式里**结构层面**的问题。
+> 单删套话不够——还要让文字在**统计分布**上更像人写的。
+
+### 策略 1：困惑度引导（perplexity steering）
+
+**原理：** AI 文本的 n-gram 困惑度远低于人类（实测：AI ~231，人类 ~533）。
+原因是 AI 总选最"安全"的下一个字。
+
+**操作：**
+- 找出文中**最高频的 2-3 个搭配**（如"具有重要意义"、"起到了...的作用"）
+- 替换为**同义但搭配不常见**的表达（"意义重大"、"它让..."）
+- 不需要全改——一段里 1-2 处足够降低困惑度
+
+**例子：**
+> AI 文本：「平台通过构建数据中台为业务赋能，实现了精细化运营能力的全面提升。」
+> 困惑度引导后：「数据集中到中台后，业务部门自己看转化率，不用再问数据组。」
+
+### 策略 2：低频 bigram 注入（rare-bigram injection）
+
+**原理：** 基于 15 万条中文字符 n-gram 频率表，**主动引入罕见二元词组**。
+罕见词组是"活人写过"的强信号。
+
+**操作：**
+- 找出文中**全是高频字**的句子（如"这是非常重要的关键问题"）
+- 在不破坏语义前提下，**替换 1-2 个低频同义组合**：
+  - "非常重要" → "要命"（口语）/"非同小可"（文艺）
+  - "解决问题" → "啃下硬骨头"（口语）/"把硬骨头啃下来"
+  - "进行讨论" → "坐下来掰扯掰扯"（口语）/"过了一遍"
+- 学术场景自动过滤口语化低频词
+
+**常见低频替换参考：**
+
+| 高频（AI） | 低频同义（人） |
+|---|---|
+| 非常重要 | 要命 / 非同小可 / 顶顶要紧 |
+| 解决问题 | 啃下硬骨头 / 把事办了 / 处理掉 |
+| 进行讨论 | 掰扯 / 坐下来过一遍 / 聊聊 |
+| 取得进展 | 啃下一块 / 往前拱了一步 |
+| 实现目标 | 做到了 / 拿下了 / 搞成了 |
+| 完成任务 | 干完了 / 收拾完 / 结了 |
+| 产生影响 | 撬动了 / 戳到了 / 戳到点上 |
+| 提供支持 | 帮一把 / 兜个底 / 撑一下 |
+
+### 策略 3：句长随机化（sentence-length jitter）
+
+**原理：** AI 每段句长方差很小（人类方差是 AI 的 2-3 倍）。
+AI 写 5 段，每段 100-120 字；人类写 5 段，30 / 180 / 60 / 220 / 50。
+
+**操作：**
+- 全文统计**句长分布**——AI 段差通常 < 20%
+- 主动**打破均匀分布**：
+  - 把长句拆成 2-3 短句
+  - 把 3 个短句并成一个长句
+  - 加一个**只 3-5 字的短句**做收尾（"是这样。" "讲完了。" "够直白。"）
+- 段落长度也随机化：长 / 短 / 中 / 超短 / 中
+
+**句长随机化模板（人味强的常见组合）：**
+- 长铺垫 + 短结论（"经过三个月的内测、几十次改版、上百条用户反馈——值得上了。"）
+- 短开 + 长铺 + 短收（"对，就这一条。后端 12 万行代码，10 个核心服务，9 张表，前端只有 3 个页面。"）
+- 4-5 个"短-短-短-长"节奏
+
+### 策略 4：噪声表达插入（noise injection）
+
+**原理：** 真人说话 / 写作会有"杂音"——犹豫、自我修正、不确定。
+AI 总是很"确定"。
+
+**操作：**
+- **犹豫语：** "大概是"、"也许是"、"我倾向于"、"差不多就是"
+- **自我修正：** "其实...不，应该说..."、"等等，我刚才漏了一点..."
+- **不确定标记：** "或许"、"可能"、"应该"、"说不准"
+- **插入语：** "反正"、"说白了"、"讲真"、"坦白讲"
+- **自问自答：** "为什么？因为..."
+
+**注意：**
+- 学术 / 公文场景**自动过滤**——这些表达在那种风格里反而刺眼
+- 公众号 / 知乎 / 口语化场景**越多越真**
+- 一段话里**最多 1-2 处**——多了像神经病
+
+**例子：**
+> 学术版：「数据表明，该方案优于现有方法。」
+> 噪声注入版（公众号）：「我反复看了三遍数据——这么说吧，确实比之前的方法强，但强多少不好讲，看场景。」
+
+---
+
+## 风格切换（7 种）
+
+> 同一段内容，**风格一变**，AI 痕迹检测评分可以差 30 分。
+> 改写前**先问清楚目标风格**——不要默认改成"中性书面"。
+
+### 1. 口语化
+**特征：** 短句、语气词（吧/呗/呢/啊）、第一人称、随口插入、不完全句
+**适用：** 朋友对话、播客文字稿、个人博客、vlog 旁白
+**关键改写点：** 把"的"删一半；"我认为" → "我觉得"；长句拆短
+**例子：**
+> 改写前：「本文将探讨三个核心议题。」
+> 改写后：「聊三件事吧。」
+
+### 2. 知乎
+**特征：** 半正式、案例驱动、夹叙夹议、偶尔掉书袋、有"答主"语气
+**适用：** 知乎答题、知识分享、行业分析
+**关键改写点：** 加入"先说结论"、"举几个例子"、"反对 @xxx 答案的一点"
+**例子：**
+> 改写前：「该现象的根本原因在于多方利益的冲突。」
+> 改写后：「根本原因？利益冲突呗。几个大厂各怀鬼胎——这种局面我见过不下三次。」
+
+### 3. 小红书
+**特征：** emoji（少而精）、感叹号、口语化、清单、亲切称呼、姐妹称谓
+**适用：** 小红书种草、生活分享、好物推荐
+**关键改写点：** 标题党化、加 emoji、结尾"姐妹们冲！"、"亲测有效"信号
+**例子：**
+> 改写前：「此方法具有显著效果。」
+> 改写后：「姐妹们亲测！我用了一周，脸上的闭口真的平了，绝了 😭」
+
+### 4. 公众号
+**特征：** 长段落 + 短金句、煽情、故事化、标题党、第一人称倾诉
+**适用：** 公众号长文、深度观点
+**关键改写点：** 加"小标题 + 金句"对仗；开篇讲故事，结尾回到金句
+**例子：**
+> 改写前：「该项目取得了突破性进展。」
+> 改写后：「这事儿，憋了三年。」
+> （金句 + 长段叙事 + 短句收尾的"公众号三明治"）
+
+### 5. 学术
+**特征：** 被动、引用、规范、客观、第三人称、术语精确
+**适用：** 学术论文、研究报告、综述
+**关键改写点：** 主动句改被动；加引用；用"本研究"代替"我"；用"基于..."、"通过..."
+**反 AI 痕迹：** 学术 AI 痕迹是"客观装得过头"——保留学术规范但**加入不确定性和反例**
+**例子：**
+> 改写前：「我们做了实验，结果表明这个方法更好。」
+> 改写后：「本研究通过对照实验（A 组 n=120，B 组 n=118）发现，所提方法在召回率上较基线高 11.3%（p<0.01），但在 F1 值上无显著差异。这一结果与文献 [12] 不一致，可能源于数据分布差异。」
+
+### 6. 文艺
+**特征：** 长句、比喻、留白、意象、节奏感、第一人称内心独白
+**适用：** 散文、随笔、专栏、个人创作
+**关键改写点：** 加具象感官（光/声音/气味）；用比喻代替抽象；段落短而意蕴长
+**例子：**
+> 改写前：「他离开后，我感到非常难过。」
+> 改写后：「他的脚步声在楼梯尽头转了个弯，然后是铁门。然后是整个七月。」
+
+### 7. 微博
+**特征：** 短句、谐音梗、表情符号、@ 提及、热门话题、跟帖感
+**适用：** 微博、短评论、即兴吐槽
+**关键改写点：** 140 字内；emoji 当标点；跟帖用"笑死"、"懂的都懂"
+**例子：**
+> 改写前：「该项政策的实施效果显著。」
+> 改写后：「政策刚出第一天，效果显著.jpg 懂的都懂 😂」
+
+---
+
+## 学术 AIGC 降重
+
+> 中文学术论文的 AIGC 检测是另一套逻辑——不是"找 AI 词"，而是"找学术 AI 句式"。
+> 10 维度 + 120 条替换词，专门打学术 AI 检测（AIGC-X、维普、格子达等平台）。
+
+### 检测维度（10 个）
+
+1. **模板句式** — 「在...中扮演着重要角色」「对于...具有重要意义」
+2. **模糊量化** — 「大量研究表明」「一定程度上」「诸多」「不少」
+3. **被动语态滥用** — 「被广泛认为」「被应用于」「得到了有效解决」
+4. **概念性套话** — 「赋能」「范式」「底层逻辑」「底层架构」
+5. **高频学术词** — 「探讨」「分析」「研究」「阐述」「梳理」「剖析」
+6. **引用伪饰** — 罗列 [1][2][3] 但实际没看、用"有学者"指代
+7. **段首总结句** — 「本节首先」「本部分将」「接下来分析」
+8. **段落结构同质** — 5 段都是"总-分-总"，句数、字数几乎一样
+9. **句长均匀** — 整篇句长方差 < 20%，AI 典型特征
+10. **名词化堆叠** — 「进行...的分析」「做出...的总结」「开展...的研究」
+
+### 替换词表（120 条，分 10 组，每组 12 条）
+
+> 完整 120 条见 `references/academic-replacements.md`（如未生成，按下表自建）。
+> 这里给目录 + 代表样本——实际改写时**按语境选词**，不要全套替换。
+
+#### 组 1：重要性套话 → 平实词
+| 高频（AI） | 低频（人） |
+|---|---|
+| 具有重要意义 | 关键 / 起了大作用 / 让... 变了样 |
+| 起着重要作用 | 是关键一环 / 不可少 |
+| 占据重要地位 | 是核心 / 在... 里挑大梁 |
+| 发挥重要作用 | 起了大作用 / 帮了大忙 |
+| 战略意义 | 直接影响... / 决定了... |
+| 重大意义 | 改变了... / 让... 走样 |
+| 现实意义 | 眼下用得上 / 落地了 |
+| 深远意义 | 长期影响 / 一直会管用 |
+| 重要价值 | 真有用 / 帮上忙 |
+| 关键作用 | 离它不行 / 缺它就塌 |
+| 关键意义 | 决定了... / 卡在... |
+| 不可替代的作用 | 没它不行 / 别人接不住 |
+
+#### 组 2：转折递进 → 简单词
+| 高频（AI） | 低频（人） |
+|---|---|
+| 此外 | 另外 / 还有一点 |
+| 与此同时 | 同一时间 / 那边也 |
+| 同时 | 顺带 / 一起 |
+| 除此之外 | 剩下 / 别的 |
+| 不仅...而且 | ... 之外还... |
+| 不仅...更... | 不止... 还... |
+| 不仅...也... | ... 也... |
+| 不但...还... | ... 还... / 还会... |
+| 既...又... | ... 还... / 同时... |
+| 此外还 | 顺带一提 / 还有 |
+| 在此基础上 | 顺着这个 / 接下来 |
+| 与此相反 | 反过来 / 倒是 |
+
+#### 组 3：模糊归因 → 明确归因
+| 高频（AI） | 低频（人） |
+|---|---|
+| 相关研究表明 | 张三（2023）发现 / 一项 2022 年研究 |
+| 有研究指出 | Smith et al. (2021) 报告 |
+| 学者认为 | 李四（2019）认为 / 一位长期研究此问题的学者 |
+| 专家指出 | 中科院张教授 / 行业资深人士 |
+| 研究显示 | 一项随机对照试验显示 / 2020 年的元分析 |
+| 业内人士表示 | 某头部厂商 CTO / 一位 10 年经验的工程师 |
+| 大量研究表明 | 多项研究（如 [3][5][7]）表明 |
+| 一般认为 | 主流观点是 / 通常被理解为 |
+| 大家普遍认为 | 多数人默认 / 业内共识是 |
+| 众所周知 | 这一点已经被反复验证 / 我们都知道 |
+| 不言而喻 | 说到底 / 一句话 |
+| 学者们 | 张教授等 / 该领域的三位研究者 |
+
+#### 组 4：总结套话 → 直接总结
+| 高频（AI） | 低频（人） |
+|---|---|
+| 综上所述 | 总的来看 / 算下来 |
+| 总之 | 一句话 / 结论是 |
+| 总的来说 | 大体上 / 说到底 |
+| 概括而言 | 简言之 / 一句话 |
+| 综合来看 | 整体上 / 算总账 |
+| 整体而言 | 整体上 / 全篇看 |
+| 由此可见 | 这么看下来 / 结果就是 |
+| 因此 | 所以 / 这就意味着 |
+| 因而 | 所以 / 于是 |
+| 故而 | 所以 / 因此 |
+| 显然 | 很明显 / 一眼就看出 |
+| 不难发现 | 看得出 / 找一下就发现 |
+
+#### 组 5：概念性套话 → 具体描述
+| 高频（AI） | 低频（人） |
+|---|---|
+| 赋能 | 让... 有能力 / 帮... 做到了 |
+| 范式 | 做法 / 套路 / 路数 |
+| 底层逻辑 | 根本原因 / 关键点 |
+| 底层架构 | 基础设计 / 核心模块 |
+| 链路 | 流程 / 上下游 |
+| 抓手 | 入手点 / 起点 / 杠杆 |
+| 闭环 | 跑通 / 走完 / 形成回路 |
+| 复盘 | 回顾 / 总结 / 看看哪步走错了 |
+| 反哺 | 回流 / 反过来支持 |
+| 沉淀 | 留下来 / 攒下来 |
+| 拉通 | 串起来 / 打通 |
+| 对齐 | 对上 / 校准 / 调成一致 |
+
+#### 组 6：高深词 → 简单词
+| 高频（AI） | 低频（人） |
+|---|---|
+| 探讨 | 谈 / 聊聊 / 研究 |
+| 剖析 | 拆开看 / 拆解 / 掰开 |
+| 阐述 | 讲清楚 / 说清楚 |
+| 梳理 | 整理一下 / 理一理 |
+| 探究 | 看看 / 追问 |
+| 深度 | 深入 / 好好 |
+| 维度 | 方面 / 角度 / 层面 |
+| 范畴 | 范围 / 圈子 |
+| 视角 | 看问题的角度 / 出发点 |
+| 路径 | 办法 / 路线 / 路子 |
+| 机制 | 怎么运转的 / 原理 |
+| 体系 | 系统 / 一套 / 整套 |
+
+#### 组 7：动作抽象化 → 动作具体化
+| 高频（AI） | 低频（人） |
+|---|---|
+| 进行分析 | 拆开看 / 跑数据 / 算了下 |
+| 进行研究 | 看了看 / 做了研究 / 调研了 |
+| 开展研究 | 做了 / 调研了 / 跑了实验 |
+| 做出总结 | 总结 / 算账 / 收个尾 |
+| 实施监控 | 盯着 / 监控着 / 上监控 |
+| 推进改革 | 改 / 推动 / 一点点推 |
+| 优化流程 | 把流程顺一遍 / 砍掉几个步骤 |
+| 提升效率 | 跑得更快 / 提速 |
+| 解决问题 | 把问题啃下来 / 处理掉 |
+| 实现突破 | 突破了 / 拱破了一层 / 拿下 |
+| 达到目标 | 做到了 / 拿下了 / 搞成了 |
+| 完成转化 | 转过去了 / 转化了 |
+
+#### 组 8：句式套话 → 多变句式
+| 高频（AI） | 低频（人） |
+|---|---|
+| 在... 过程中 | ... 的时候 / ... 中间 |
+| 随着... 的发展 | ... 一来 / ... 上来 |
+| 基于以上分析 | 这么看下来 / 按这逻辑 |
+| 通过以上讨论 | 聊到这里 / 上面说过 |
+| 鉴于此 | 所以 / 这么一来 |
+| 在此背景下 | 这背景下 / 眼下 |
+| 一定程度上 | 多少 / 一点 / 一些 |
+| 大大提高 | 提了不少 / 高了一截 |
+| 显著提升 | 提升 / 涨了不少 |
+| 有效促进 | 推动 / 帮着 / 让... 上来了 |
+| 全面提升 | 提了一截 / 各方面都上来了 |
+| 充分体现 | 看得出 / 反映在 / 体现在 |
+
+#### 组 9：四字成语 → 简单表达
+| 高频（AI） | 低频（人） |
+|---|---|
+| 行云流水 | 顺 / 流畅 / 一气呵成 |
+| 水到渠成 | 自然就成了 / 顺势做成了 |
+| 相辅相成 | 互相撑着 / 一起发力 |
+| 浑然一体 | 合在一起 / 一块儿 |
+| 历久弥新 | 老问题 / 越老越管用 |
+| 蔚然成风 | 成了风气 / 大家都在做 |
+| 异军突起 | 突然冒出来 / 杀出来 |
+| 突飞猛进 | 飞涨 / 涨得快 / 跑得快 |
+| 举足轻重 | 卡在关键位 / 少不了 |
+| 不可或缺 | 离它不行 / 没它就塌 |
+| 立竿见影 | 立刻见效 / 用了就有 |
+| 卓有成效 | 有效 / 干出成绩了 |
+
+#### 组 10：名词化堆叠 → 动词化
+| 高频（AI） | 低频（人） |
+|---|---|
+| 进行... 的分析 | 拆开看看 / 跑了分析 |
+| 做出... 的总结 | 总结一下 / 收个尾 |
+| 开展... 的研究 | 做了研究 / 调研了 |
+| 完成... 的实现 | 实现了 / 做到了 |
+| 实现... 的转化 | 转化了 / 转过去了 |
+| 达到... 的效果 | 起作用了 / 见效了 |
+| 推进... 的落地 | 落地 / 推下去 |
+| 进行... 的探讨 | 聊了 / 谈了 |
+| 完成... 的整合 | 合起来 / 整合了 |
+| 实现... 的突破 | 突破了 / 拿下了 |
+| 推动... 的升级 | 升级 / 往前走 |
+| 提升... 的能力 | 提了一截 / 练出来了 |
+
+### 学术降重操作流程
+
+1. **跑 AIGC 检测**（如格子达 / 维普 / AIGC-X）— 拿到原始评分
+2. **挑出评分最高的 3-5 段**（不是全部，AI 痕迹重的重点改）
+3. **对照 10 维度逐项排查** — 找到具体扣分点
+4. **用替换词表 + 句式重组** — 一段一段改
+5. **保留学术规范** — 引用、术语、客观性不能丢
+6. **加"复杂性信号"** — 主动加"局限性"、"未来工作"、"反例讨论"
+7. **再跑一次 AIGC 检测** — 验证降到 20% 以下（多数平台合格线）
+
+**关键原则：**
+- 学术降重**不是洗稿**——保留观点和创新点
+- 引用必须真看，没看过的删掉，**不能伪造引用**
+- 加复杂性和反例是降 AIGC 评分的"杀手锏"——AI 几乎不会主动承认局限
+
+---
+
+## 评估方法
+
+> 改完怎么知道真的"去 AI 味"了？三层评估。
+
+### 第一层：规则评分（rule-based scoring）
+
+**操作：**
+- 扫 30+ 中文模式触发词，统计命中数
+- 每命中一处扣 5-10 分（按严重程度）
+- **初始分 100，扣完为止**
+- 目标：**改后分 ≥ 80**
+
+**快速参考扣分权重：**
+| 模式类型 | 单次扣分 |
+|---|---|
+| 「本文旨在 / 标志着 / 赋能 / 多维度」 | -8 |
+| 「此外 / 综上所述 / 值得注意的是」 | -5 |
+| 破折号过度 | -3/次 |
+| 「希望对您有帮助 / 让我们一起」 | -10（暴露客服腔） |
+| 加粗「**重要** / **关键**」 | -3/次 |
+| 标点混用 | -2/次 |
+
+### 第二层：困惑度统计（perplexity）
+
+**操作：**
+- 用 n-gram 模型（5-gram）算改写前后困惑度
+- **基线参考：**
+  - AI 文本：~ 200-250
+  - 人类文本：~ 500-600
+- **目标：改后 > 400**
+- 工具：可用 `pylanguagetool` + 自训 n-gram，或调用 `humanize-chinese` 的 `detect` 接口
+
+**重要：困惑度高 ≠ 好文字。困惑度低 ≠ AI。**
+困惑度只衡量"被模型预测的难度"——人类有跑题、绕弯、口头禅，这些都拉高困惑度。
+如果改完后困惑度高但语义乱了，就是**改过头**。
+
+### 第三层：段落熵（section entropy）
+
+**操作：**
+- 统计每段字数、句数、句长方差
+- 计算段间差异
+- **AI 文本特征：** 段差 < 20%、句长方差 < 30
+- **人类文本特征：** 段差 30-80%、句长方差 50-150
+- **目标：改后段差 > 30%、句长方差 > 50**
+
+### 改写前后对比模板
+
+```text
+=== 改写评估 ===
+# 规则评分
+- 改前: 35/100（命中 13 处）
+- 改后: 85/100（命中 3 处，均为合理保留）
+
+# 困惑度
+- 改前: 217（典型 AI 区间）
+- 改后: 489（人类区间）
+
+# 段落熵
+- 改前: 段差 12%，句长方差 24
+- 改后: 段差 47%，句长方差 78
+
+# 风格匹配
+- 目标: 知乎 / 实际匹配度: 8/10
+- 残留痕迹: [列出]
+
+# 总评: ✅ / ⚠️ / ❌
+```
+
+---
+
+## 流程（Workflow）
+
+1. **读输入** — 仔细读完，标出明显 AI 痕迹段落
+2. **判断风格目标** — 问用户 / 看场景，不默认
+3. **扫模式** — 30+ 中文模式 + 必要时的英文模式（附录 A）
+4. **选策略** — 4 招按需组合（学术场景多策略 1+2；公众号多策略 3+4）
+5. **逐段改写** — 保留原意，注入人味
+6. **自检** — 跑评估（规则 + 困惑度 + 段落熵）
+7. **反 AI 闸** — 自问"这段还像 AI 吗？"
+8. **定稿** — 输出最终版 + 改写评估
+
+---
+
+## 输出格式
+
+提供：
+1. **改写稿**（最终版）
+2. **「这段还像 AI 吗？」自检** — 简短列出剩余痕迹（如有）
+3. **改写评估** — 规则分 / 困惑度 / 段落熵（前/后）
+4. **简要说明改了啥**（可选，但公众号/知乎场景建议加）
+
+---
+
+## 附录 A：英文 AI 模式参考（仅翻译英 → 中 / 校验英文时用）
+
+> 来源：Wikipedia "Signs of AI writing"（由 WikiProject AI Cleanup 维护）。
+> 仅在处理英文文本或英文 → 中文翻译时查阅。中文本改写**不要套用**——中文有自己的 30+ 模式。
+> 26 类压缩版，每类给：核心触发 + 一句话处理思路。
+
+### Content（内容）
+1. **Significance inflation** — "stands as / testament / pivotal moment" → 删，让事实自己说话
+2. **Notability padding** — 罗列媒体但无引用 → 删，必要时改具体引用
+3. **-ing 分析尾巴** — "highlighting / underscoring" → 改成主句
+4. **Promotional language** — "vibrant / nestled / breathtaking" → 删
+5. **Vague attributions** — "Experts argue / Observers cite" → 给具体来源
+6. **Challenges 段** — 套话结尾 → 删或换成具体问题
+
+### Language & Grammar（语言语法）
+7. **AI vocabulary** — Additionally / delve / foster / leverage → 删或换
+8. **Copula avoidance** — "serves as / stands as" → 改回 "is / are"
+9. **Negative parallelisms** — "Not just... it's..." → 删
+10. **Rule of three** — 三词排比 → 保留必要的两个
+11. **Elegant variation** — 同义反复换词 → 复用原词
+12. **False ranges** — "from X to Y" → 直接列
+
+### Style（风格）
+13. **Em dash overuse** — 限制每段最多一个 —
+14. **Boldface overuse** — 删除 **加粗** 装饰
+15. **Inline-header lists** — `**Header:** content` → 改为主谓句
+16. **Title case headings** — "Strategic Negotiations And..." → "Strategic negotiations and..."
+17. **Emojis** — 删
+18. **Curly quotes** — "..." → "..."
+19. **Markdown bold 包含括号** — `**术语（English）**` → `**术语**（English）`
+
+### Communication（交流）
+20. **Collaborative artifacts** — "I hope this helps" → 删
+21. **Knowledge cutoff** — "as of my last update" → 删
+22. **Sycophantic tone** — "Great question!" → 删
+
+### Filler & Hedging（凑字 & 过度对冲）
+23. **Filler phrases** — "In order to" → "To"；"Due to the fact that" → "Because"
+24. **Excessive hedging** — "could potentially possibly" → "may"
+25. **Generic positive conclusions** — "Exciting times lie ahead" → 删
+26. **Hyphenated pairs** — "cross-functional / data-driven" → 视情况加 / 删 -
+
+**英文文本改写流程：**
+1. 扫 26 条 → 命中即改
+2. 跑困惑度（英文基线：AI ~180，人类 ~480）
+3. 保留"PERSONALITY AND SOUL"的人格化原则（见上文）
+
+---
+
+## 附录 B：参考资源
+
+- [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) — 英文 26 类的源头
+- [yukinotech/humanize-chinese](https://github.com/yukinotech/humanize-chinese) — 中文专项，30+ 模式、困惑度、7 风格、AIGC 降重
+- [Writers' Workshop: Detecting AI writing](https://hackmd.io/@writersworkshop/HkpmBwf5C) — 经验证的中文 AI 词频表
+- 各家 AIGC 检测平台（格子达 / 维普 / AIGC-X）— 学术场景的目标基线
+
+**关键洞察（来自 Wikipedia）：**"LLM 用统计算法猜下一字。结果倾向最可能、适用面最广的那个。"——所以反 AI 写作的根，是**反统计、回归意图**。
+
+---
+
+## 一句话总结
+
+> 删套话是入门，**找声音**是修行。
+> 改写时每删一处「赋能」，就反问一句：**作者原本想说什么？**
+> 想清楚了，文字自然像人写的。
