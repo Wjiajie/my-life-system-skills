@@ -1,19 +1,6 @@
 ---
 name: humanizer
-description: |
-  Detect and rewrite AI-generated writing — in 中文 (primary) and English (secondary) — to
-  sound natural and human. Use when 编辑 / 审校 / 润色 / 降 AIGC / 去 AI 味 any text that
-  reads like AI output. 覆盖中文学术论文、公众号 / 小红书 / 知乎 / 微博文案、营销稿、
-  产品文案、技术博客、报告、公文、商业邮件。
-
-  Fixes 30+ 类中文 AI 痕迹（分四组：内容 / 语言语法 / 风格 / 交流），包括但不限于
-  「本文旨在」「赋能」「多维度」「值得注意的是」「综上所述」「希望对您有帮助」
-  等套话；支持 7 种中文风格切换（口语化 / 知乎 / 小红书 / 公众号 / 学术 / 文艺 / 微博）；
-  4 类改写策略（困惑度引导 / 低频 bigram 注入 / 句长随机化 / 噪声表达插入）；
-  10 维度学术 AIGC 降重（含 120 条学术替换词表）。
-
-  灵魂是人格化：不只是删套话，而是把声音找回来。原版 Wikipedia "Signs of AI writing"
-  26 类英文模式保留为附录 A，仅在翻译英 → 中 / 校验英文文本时使用。
+description: "Detect and rewrite AI-generated writing — 中文 (primary) and English (secondary). Use when 编辑/审校/润色/降AIGC/去AI味. 覆盖中文学术论文、公众号/小红书/知乎/微博文案、营销稿、产品文案、技术博客、报告、公文、商业邮件. Fixes 30+ 类中文 AI 痕迹(四组:内容/语言语法/风格/交流);支持 7 种风格切换、4 类改写策略、10 维度学术降重(120 条替换词表)."
 ---
 
 # Humanizer · 去 AI 味写作（中英双轨）

@@ -1,6 +1,6 @@
 ---
 name: code-testing
-description: Codex-native testing and evidence QA skill. Use when Codex needs to verify code changes, run unit/integration tests, test a local web app, inspect UI behavior in a browser, capture screenshots, reproduce bugs, or produce a QA report. Combines automated test commands with evidence-based browser QA: start the dev server, use the Codex Browser plugin or Playwright where appropriate, record repro steps, screenshots, console/network errors, fixes, and re-verification.
+description: "Codex-native testing and evidence QA skill. Use when Codex needs to verify code changes, run unit/integration tests, test a local web app, inspect UI behavior in a browser, capture screenshots, reproduce bugs, or produce a QA report. Combines automated test commands with evidence-based browser QA — start the dev server, use the Codex Browser plugin or Playwright where appropriate, record repro steps, screenshots, console/network errors, fixes, and re-verification."
 ---
 
 # Code Testing

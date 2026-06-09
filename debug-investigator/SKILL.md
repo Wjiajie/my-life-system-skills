@@ -1,6 +1,6 @@
 ---
 name: debug-investigator
-description: Root-cause debugging skill for Codex. Use when the user reports a bug, failing test, regression, exception, production issue, flaky behavior, broken UI flow, or asks to investigate before fixing. Enforces evidence-first debugging: reproduce, trace data/control flow, test hypotheses, fix the root cause, add regression coverage, and verify.
+description: "Root-cause debugging skill for Codex. Use when the user reports a bug, failing test, regression, exception, production issue, flaky behavior, broken UI flow, or asks to investigate before fixing. Enforces evidence-first debugging — reproduce, trace data and control flow, test hypotheses, fix the root cause, add regression coverage, and verify."
 ---
 
 # Debug Investigator

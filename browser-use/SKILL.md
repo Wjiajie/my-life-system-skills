@@ -1,20 +1,6 @@
 ---
 name: browser-use
-description: |
-  Drive a real Chrome browser through the Browser MCP server (`@browsermcp/mcp`)
-  — the user's own Chrome profile with all logged-in sessions, cookies, and
-  extensions. Use this skill whenever the user wants the agent to open, click,
-  type, fill, screenshot, scrape, login to, or visually test a live webpage in a
-  real browser. Triggers on phrases like "打开这个网站", "访问 xxx", "登录 xxx 抓一下",
-  "看一下移动端样式", "截图给我", "填一下表单", "点这个按钮", "open this URL",
-  "browse to", "log into X and get Y", "screenshot this page", "scrape this site",
-  "click the X button", "fill in the form", "read the console errors". Do NOT
-  use for purely textual fetches where the page is already a static doc — prefer
-  `webfetch` / `matrix_web_search` first (cheaper). Do NOT use for headless CI /
-  E2E test rigs with no human in the loop — prefer the `playwright` MCP server
-  (clean isolated profile). If Browser MCP is not set up, fall back to the
-  built-in `mavis-browser` (drives the user's real Chrome via the local broker)
-  or `playwright` MCP (headless), but say so explicitly so the user knows.
+description: "Drive a real Chrome browser through Browser MCP (`@browsermcp/mcp`) — user's profile with logged-in sessions, cookies, and extensions. Use to open/click/type/fill/screenshot/scrape/login to a live webpage in a real browser. Triggers: '打开这个网站', '访问 xxx', '登录 xxx 抓一下', '截图给我', 'open this URL', 'browse to', 'log into X and get Y', 'screenshot this page', 'fill the form'. Do NOT use for static text fetches (prefer webfetch) or headless CI/E2E (prefer playwright MCP)."
 ---
 
 # browser-use

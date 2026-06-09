@@ -1,6 +1,6 @@
 ---
 name: cso
-description: Chief Security Officer audit skill. Read-only infrastructure-first security review covering secrets archaeology, dependency supply chain, CI/CD pipeline security, LLM/AI security, skill supply chain, OWASP Top 10, and STRIDE threat modeling. Two modes — daily (8/10 confidence gate, zero noise) and comprehensive (2/10 bar, surfaces tentative issues) — with cross-run trend tracking in `.cso/security-reports/`. Use when: "security audit", "threat model", "vulnerability scan", "OWASP review", "find secrets", "audit dependencies", "check CI/CD", "prompt injection review", "CSO review", "/cso".
+description: "Chief Security Officer audit skill. Read-only infrastructure-first security review covering secrets archaeology, dependency supply chain, CI/CD pipeline security, LLM/AI security, skill supply chain, OWASP Top 10, and STRIDE threat modeling. Two modes — daily (8/10 confidence gate, zero noise) and comprehensive (2/10 bar, surfaces tentative issues) — with cross-run trend tracking in `.cso/security-reports/`. Use when — \"security audit\", \"threat model\", \"vulnerability scan\", \"OWASP review\", \"find secrets\", \"audit dependencies\", \"check CI/CD\", \"prompt injection review\", \"CSO review\", \"/cso\"."
 ---
 
 # cso — Chief Security Officer Audit
