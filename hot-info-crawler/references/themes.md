@@ -6,8 +6,8 @@
 
 | 类型 | 默认优先平台 | 适用场景 |
 |------|------------|---------|
-| 技术类 | HuggingFace Papers, X.com | 学术论文和技术社区更活跃的主题（如 AI、ML、编程等） |
-| 软技能类 | YouTube, Reddit, X.com；即刻作为中文补充源 | 高质量内容以视频、深度讨论、社交观点和中文社区讨论为主的主题（如教育、商业、个人成长、投资等）。在 Codex 环境中必须先使用 `[@chrome](plugin://chrome@openai-bundled)` 打开目标平台页面抓取可见内容 |
+| 技术类 | AI HOT API（AI 工具 / agent）/ HuggingFace Papers（LLM 理论）/ X.com（具身智能） | 学术/工具/agent/具身智能主题。AI 工具与 agent 走 API，LLM 理论走论文，具身智能走 X.com 实时讨论 |
+| 软技能类 | YouTube, Reddit, X.com；即刻作为中文补充源 | 高质量内容以视频、深度讨论、社交观点和中文社区讨论为主的主题（如教育、商业、个人成长、投资等）。在 Hermes 环境中必须先使用 `/ego-browser` skill 打开目标平台页面抓取可见内容。YouTube 视频结果必须再用 `/media/youtube-content` skill 拉字幕做结构化深度总结 |
 
 > 用户可在 `user_config.md` 的主题表格中通过 `优先平台` 字段覆盖默认映射。
 
@@ -21,10 +21,15 @@ Agent 在执行每个主题的检索时，按以下逻辑确定使用哪些平�
 
 ## 抓取方式约束
 
-- AI 工具、LLM 理论：按 AI HOT API 流程。
-- 具身智能：使用浏览器打开目标页面抓取。
-- 软技能类：使用浏览器打开 YouTube / Reddit / X.com / 即刻等配置平台页面抓取。思维模型、家庭教育、投资管理属于软技能类；Codex 环境首选 `[@chrome](plugin://chrome@openai-bundled)`，不能直接以 Reddit JSON、搜索 API 或纯 HTTP 结果作为首选来源。
-- JSON / HTTP 读取只作为兜底或补充校验；一旦使用，必须在报告备注中说明原因。
+主题的具体抓取方式以 `user_config.md` 主题表格中的 `优先平台` 字段为准，不依赖"类型"硬编码：
+
+- `AI HOT API` → 按 AI HOT API 流程获取，参考 `references/aihot_skill.md`
+- `HuggingFace Papers` → 用 `/ego-browser` 打开 `https://huggingface.co/papers` 日期页 / 搜索页抓取
+- `X.com` → 用 `/ego-browser` 打开 X.com 搜索页 / 相关账号主页
+- `YouTube` / `Reddit` / `即刻` 等多平台组合 → 用 `/ego-browser` 打开对应平台页面
+- 具身智能（`X.com`）：不使用 AI HOT API，不打开 HuggingFace Papers / AI HOT 前端
+- 软技能类（思维模型 / 家庭教育 / 投资管理）：使用 `/ego-browser` 抓 YouTube / Reddit / X.com / 即刻；YouTube 视频结果必须再用 `/media/youtube-content` skill 拉字幕做结构化深度总结（章节/摘要/引用）
+- JSON / HTTP 读取只作为兜底或补充校验；一旦使用，必须在报告备注中说明原因
 
 ## 软技能类推荐信息源
 
@@ -45,7 +50,7 @@ Agent 在执行每个主题的检索时，按以下逻辑确定使用哪些平�
 如果用户在信息源开关中启用了即刻，Agent 应将即刻作为**补充检索源**追加到所有主题中（与主题本身的优先平台并列）。
 
 - 即刻仅使用**中文关键词**搜索（不适用英文回退）
-- 即刻需要浏览器登录；Codex 环境默认优先使用 `[@chrome](plugin://chrome@openai-bundled)`，非 Codex 环境通常依赖 `browser_mcp` 复用已登录会话
+- 即刻需要浏览器登录；Hermes 环境默认使用 `/ego-browser` skill，可继承用户登录态
 - 如果即刻未启用，忽略所有即刻相关检索
 
 ## 关键词回退

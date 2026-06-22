@@ -1,6 +1,6 @@
 # AI HOT API 使用说明
 
-AI 工具和 LLM 理论相关资讯必须优先使用 AI HOT API 获取，不要先用浏览器搜索抓取 X.com、HuggingFace、YouTube 或 Reddit。具身智能主题不使用本 API 流程，改用 Codex 内置浏览器打开目标页面抓取。
+AI 工具和 LLM 理论相关资讯必须优先使用 AI HOT API 获取，不要先用浏览器搜索抓取 X.com、HuggingFace、YouTube 或 Reddit。具身智能主题不使用本 API 流程，改用 `/ego-browser` skill 打开目标页面抓取。
 
 来源页面：https://aihot.virxact.com/aihot-skill/
 
@@ -138,6 +138,7 @@ Invoke-RestMethod -Uri $url -Headers @{ "User-Agent" = $UA }
 
 - 输出中文 Markdown 简报。
 - 标题可以保留原文链接文本，但摘要、入选理由、主题解释必须使用中文。
+- **摘要必须完整输出，禁止任何形式截断**（禁止 `…` / `...` / `[truncated]` / `（后略）`）。AI HOT API 返回的 `summary` 字段多长就输出多长，可以长但不能短；如果是多段、嵌套列表、引用，全部保留。**没有"摘要过长需要省略"这种场景**。
 - 默认按五个 AI HOT 版块分组：模型发布/更新、产品发布/更新、行业动态、论文研究、技巧与观点。
 - 全文使用连续编号，不要每个版块重新从 1 开始。
 - 每条必须保留原始来源 URL。

@@ -41,34 +41,31 @@
 <!-- section:header_done -->
 ```
 
-### 步骤 3：工具选择（按环境回退）
+### 步骤 3：浏览器工具选择
 
-按以下优先级确定可用的浏览器工具：
+Hermes 环境中所有需要浏览器的页面抓取统一通过 `/ego-browser` skill 执行，调用方式为 `ego-browser nodejs <<'EOF' ... EOF` heredoc 脚本（详见 `/ego-browser` SKILL 文档）：
 
 ```
-1. 如果当前运行在 Codex 环境，且主题是具身智能、思维模型、家庭教育、投资管理或其他远程网页主题，优先使用 `[@chrome](plugin://chrome@openai-bundled)`
-   ├─ ✅ 可用 → 使用用户 Chrome 打开目标站点页面（后续流程使用真实 Chrome 页面、DOM、截图、登录态和扩展环境）
-   └─ ❌ 不可用 / 非 Codex 环境
-       2. 如果 Codex 内置浏览器 `browser-use:browser` 可用，使用 Codex 内置浏览器
-          ├─ ✅ 成功 → 使用 in-app browser 打开、截图、检查 DOM/页面内容
-          └─ ❌ 失败 / 工具不存在
-              3. 尝试调用 browser_navigate 或 browser_snapshot
-                 ├─ ✅ 成功 → 使用 browser_mcp（后续流程使用 browser_navigate + browser_snapshot）
-                 └─ ❌ 失败
-                     4. 使用 browser_subagent（任务描述方式）
-                        ├─ ✅ 成功 → 使用 browser_subagent
-                        └─ ❌ 失败
-                            5. 回退到 read_url_content（纯 HTTP 抓取）
+1. 在 Hermes 环境中，通过 /ego-browser skill 打开目标页面：
+   - 在 heredoc 中调用 await useOrCreateTaskSpace(name) 复用 task space
+   - 使用 await openOrReuseTab(url, { wait: true }) 打开目标 URL
+   - 使用 await snapshotText() / await js('...') 提取页面内容
+   - 需要时调用 await scrollToBottomUntil(...) / await captureScreenshot() 获取更多内容
+   - 在 heredoc 末尾用 await completeTaskSpace(name, { keep: false }) 收尾
+   ├─ ✅ 成功 → 使用 ego-browser 抓取到的页面 DOM、可见文本或截图
+   └─ ❌ ego-browser 不可用 / 页面反爬 / 登录态不足
+       2. 回退到 read_url_content（纯 HTTP 抓取，无 JS 渲染）
 ```
 
-各工具的操作方式对照：
+`ego-browser` 的常用操作方式对照（更多 helper 见 `/ego-browser` SKILL）：
 
-| 操作 | `@chrome` | browser-use:browser | browser_mcp | browser_subagent | read_url_content |
-|------|-----------|---------------------|-------------|------------------|------------------|
-| 访问页面 | 使用 Chrome 插件打开 URL | 使用 Codex in-app browser 导航到 URL | `browser_navigate(url)` | 在任务描述中指定 URL | `read_url_content(url)` |
-| 获取内容 | 使用 Chrome 页面 DOM、截图或 Playwright 提取 | 使用截图、DOM/页面检查或浏览器自动化结果提取 | `browser_snapshot()` | 子代理自动提取并返回 | 工具直接返回 Markdown |
-| 滚动加载 | 使用 Chrome 页面滚动并复查 DOM | 使用浏览器交互滚动并复查页面 | `browser_scroll()` | 在任务中要求"滚动获取更多" | ❌ 不支持 |
-| 点击交互 | 使用 Chrome 页面点击/输入 | 使用浏览器交互点击并复查页面 | `browser_click(element)` | 在任务中要求"点击某元素" | ❌ 不支持 |
+| 操作 | `/ego-browser` (heredoc) | `read_url_content` |
+|------|--------------------------|--------------------|
+| 访问页面 | `await openOrReuseTab(url, { wait: true })` | `read_url_content(url)` |
+| 获取内容 | `await snapshotText()` 或 `await js('(() => { ... })()')` | 工具直接返回 Markdown |
+| 滚动加载 | `await scrollToBottomUntil(predicate, opts)` 或 `await scrollBy(n)` | ❌ 不支持 |
+| 点击交互 | `await click('@N')` 或 `await click(selector)` | ❌ 不支持 |
+| 截图 | `await captureScreenshot()` | ❌ 不支持 |
 
 ---
 
@@ -106,11 +103,13 @@
 
 ### AI 相关主题的路由
 
-如果主题是 AI 工具或 LLM 理论，优先读取 `references/aihot_skill.md`，使用 AI HOT API 获取内容。
+主题的抓取方式由 `user_config.md` 主题列表的 `优先平台` 字段决定，不再依赖"主题类型"硬编码：
 
-如果主题是具身智能，**不要使用 AI HOT API**。改为使用 Codex 内置浏览器打开目标页面抓取，例如 AI HOT 前端搜索页、HuggingFace Papers 日期页 / 搜索页、X.com 搜索页或其他配置平台页面。整理结果后直接写入该主题小节，并添加 `<!-- section:theme_{板块标记ID}_done -->`。
+- `AI 工具 / agent`（优先平台 = `AI HOT API`）→ 读取 `references/aihot_skill.md`，调用 aihot.virxact.com 的 AI HOT API 获取内容。**不要**先用 `/ego-browser` 抓取 X.com、HuggingFace、YouTube 或 Reddit 替代
+- `LLM 理论`（优先平台 = `HuggingFace Papers`）→ 读取 `references/aihot_skill.md` 调用 AI HOT API，或者用 `/ego-browser` 打开 `https://huggingface.co/papers` 日期页 / 搜索页抓取论文条目；不要扩展到 X.com 或 Reddit
+- `具身智能`（优先平台 = `X.com`）→ **不要使用 AI HOT API**，**不要打开 HuggingFace Papers / AI HOT 前端**，统一用 `/ego-browser` skill 打开 X.com 搜索页或相关账号主页抓取
 
-只有 AI 工具和 LLM 理论使用 API；具身智能和非 AI / 软技能主题继续使用浏览器工具回退策略。思维模型、家庭教育、投资管理等软技能主题在 Codex 环境中必须先使用 `[@chrome](plugin://chrome@openai-bundled)` 打开 Reddit / YouTube / X.com / 即刻等目标页面，从页面可见内容、DOM、截图或浏览器自动化结果中提取条目；不得把 Reddit JSON、搜索 API 或纯 HTTP 抓取作为首选路径。
+只有 `AI 工具 / agent` 走纯 API；`LLM 理论` 主要走 HuggingFace Papers；`具身智能` 和所有软技能类主题统一通过 `/ego-browser` skill 抓取。思维模型、家庭教育、投资管理等软技能主题在 Hermes 环境中必须使用 `/ego-browser` skill 打开 Reddit / YouTube / X.com / 即刻等目标页面，从 `snapshotText` / `js` / `captureScreenshot` 提取条目；不得把 Reddit JSON、搜索 API 或纯 HTTP 抓取作为首选路径。
 
 ### 主题执行顺序与标记（动态生成）
 
@@ -135,40 +134,57 @@
 
 #### 步骤 1.5：确定抓取方式
 
-- `AI 工具`、`LLM 理论`：使用 `references/aihot_skill.md` 的 AI HOT API 流程。
-- `具身智能`：使用浏览器打开目标页面抓取，不使用 AI HOT API。
-- `软技能类` 与其他非 AI 主题：使用浏览器打开配置平台页面抓取。对当前默认配置中的 `思维模型`、`家庭教育`、`投资管理`，Codex 环境必须先使用 `[@chrome](plugin://chrome@openai-bundled)` 打开对应 Reddit 子版块、YouTube 搜索页、X.com 搜索页或即刻搜索页。
-- 只有当浏览器工具不可用、页面反爬、页面加载失败或登录态不足导致无法提取可见内容时，才允许回退到 JSON / HTTP；回退后必须在报告的“抓取备注”中写明原因。
+- 主题抓取方式以 `user_config.md` 主题表格中的 `优先平台` 字段为准：
+  - `AI HOT API` → 按 `references/aihot_skill.md` 的 AI HOT API 流程
+  - `HuggingFace Papers` → 用 `/ego-browser` 打开 `https://huggingface.co/papers` 日期页 / 搜索页抓取论文条目
+  - `X.com` → 用 `/ego-browser` 打开 X.com 搜索页 / 相关账号主页
+  - `YouTube` / `Reddit` / `即刻` 等多平台组合 → 用 `/ego-browser` 打开对应平台页面
+- `具身智能`（优先平台 = `X.com`）绝不使用 AI HOT API，绝不打开 HuggingFace Papers / AI HOT 前端
+- 软技能类（思维模型 / 家庭教育 / 投资管理）必须先浏览器抓页面；YouTube 视频结果必须再用 `/media/youtube-content` skill 拉字幕做深度总结（详见"步骤 3.5"）
+- 只有当 ego-browser 不可用、页面反爬、页面加载失败或登录态不足导致无法提取可见内容时，才允许回退到 JSON / HTTP；回退后必须在报告的"抓取备注"中写明原因
 
 #### 步骤 2：访问目标 URL 并获取内容
 
 根据确定的平台列表，构造对应平台的搜索 URL（参见 `references/platforms.md`），然后使用已确定的工具获取页面内容：
 
-**[@chrome](plugin://chrome@openai-bundled)（Codex 软技能默认）：**
-1. 使用 Chrome 插件打开目标 URL
-2. 从真实 Chrome 页面 DOM、可见文本、截图或 Playwright 结果中提取信息条目
-3. 如需更多内容，在 Chrome 页面中滚动加载后再次检查 DOM / 可见内容
-4. 对 X.com、YouTube、即刻等登录态相关站点，优先使用此方式复用用户 Chrome 状态
+**`/ego-browser` skill（Hermes 唯一浏览器）：**
 
-**browser-use:browser（Codex 备选）：**
-1. 使用 Codex 内置浏览器打开目标 URL
-2. 使用页面截图、DOM/页面检查或浏览器自动化结果提取信息条目
-3. 如需更多内容，在浏览器中滚动加载后再次检查页面
+在 Bash 中执行 `ego-browser nodejs <<'EOF' ... EOF` heredoc 脚本，调用 `/ego-browser` 提供的 helper：
 
-**browser_mcp（备选）：**
-1. 使用 `browser_navigate` 导航到目标 URL
-2. 使用 `browser_snapshot` 获取页面快照
-3. 如需更多内容，使用 `browser_scroll` 滚动后再次 `browser_snapshot`
+```js
+const task = await useOrCreateTaskSpace('hot-info-crawler <主题名>')
+await openOrReuseTab('<目标 URL>', { wait: true, timeout: 20 })
+// semantic workflow：默认
+const tree = await snapshotText()       // 返回带 @N refs 的页面语义树
+cliLog(tree)
+// direct DOM 提取：把 IIFE 字符串传给 js()
+const data = await js(String.raw`(() => {
+  const items = [...document.querySelectorAll('article')]
+  return items.map(el => ({ title: el.innerText, links: [...el.querySelectorAll('a')].map(a => a.href) }))
+})()`)
+cliLog(JSON.stringify(data, null, 2))
+// 滚动加载更多
+await scrollToBottomUntil(
+  async () => await js(String.raw`document.querySelectorAll('article').length`) >= 20,
+  { step: 900, wait: 1, maxSteps: 20 },
+)
+// 收尾
+await completeTaskSpace(task.id, { keep: false })
+```
 
-**browser_subagent（备选）：**
-向 `browser_subagent` 下发任务，例如：
-> 导航到 `{目标URL}`，提取页面中所有信息条目，包括标题、**原文链接（URL）**、作者、互动数据（点赞数等）。对于 X.com 搜索结果，每条推文的链接格式为 `https://x.com/{用户名}/status/{推文ID}`，务必提取完整链接。如果内容不足，请向下滚动加载更多。返回至少 10 条结果。
+要点：
 
-**read_url_content（兜底）：**
-直接使用 `read_url_content` 获取 URL 返回的 Markdown 内容，从中提取信息。
+- 同一次任务的多轮 heredoc 之间复用 `useOrCreateTaskSpace(name)` 保持同一 task space
+- 提取条目后再 `completeTaskSpace(name, { keep: false })` 关闭 task space
+- 对 X.com、YouTube、即刻等登录态相关站点，ego-browser 可继承用户登录态
+- 跨多次 `snapshotText()` 时，ref 编号（N）来自 `backendNodeId` 会保持稳定，但 N 必须出现在最新一次 `snapshotText()` 输出中；需要长期引用的元素请用 `loc=...` 或 CSS selector
 
-> **提示**：访问即刻（web.okjike.com）前需确保已在浏览器中登录即刻账号。Codex 环境优先使用 `[@chrome](plugin://chrome@openai-bundled)` 复用用户 Chrome 登录态；非 Codex 环境中通常仅 `browser_mcp` 模式支持复用已登录浏览器会话。
-> **强制要求**：非 AI / 软技能主题优先打开目标站点页面并从浏览器页面快照 / DOM / 可见内容提取；不要用搜索引擎结果页替代站内页面。只有浏览器工具不可用、页面反爬或内容无法加载时，才回退到 JSON / HTTP 读取，并在输出备注中说明。
+**`read_url_content`（兜底）：**
+
+只有当 `/ego-browser` 不可用、页面反爬、加载失败或登录态不足时，才回退到 `read_url_content` 获取 URL 返回的 Markdown 内容。回退后必须在报告"抓取备注"中写明原因。
+
+> **提示**：访问即刻（web.okjike.com）前需确保 ego-browser 已登录即刻账号，可继承用户登录态；无登录态时仅能获取公开内容。
+> **强制要求**：非 AI / 软技能主题优先打开目标站点页面并从浏览器页面快照 / DOM / 可见内容提取；不要用搜索引擎结果页替代站内页面。只有 ego-browser 不可用、页面反爬或内容无法加载时，才回退到 JSON / HTTP 读取，并在输出备注中说明。
 
 #### 步骤 3：数据提取
 
@@ -177,9 +193,83 @@
 - **核心标准**：
   - **中文化呈现**：标题可保留原文，但必须补充中文主题说明；摘要、入选理由和核心观点必须是中文。
   - **全中文摘要**：即便源内容为英文，摘要也必须使用准确、专业的中文呈现。
-  - **深度概括**：严禁仅简单翻译标题或提取首句。摘要需覆盖帖子的核心结论、核心技术点或主要争议点。
-  - **长度控制**：每条摘要应保持在 50-100 字左右，确保用户无需点击原文即可掌握核心价值。
+  - **深度概括**：摘要需覆盖帖子的核心结论、核心技术点或主要争议点。**不截断、不省略、不以"太长"为理由用 `…` / `...` 收尾**——原贴文多少字、API 摘要多长就输出多少字，可以长但不能短。
   - **必须带来源链接**：每条内容**必须附上原始 URL**。无链接 = 不收录。X.com 帖子链接格式为 `https://x.com/{用户名}/status/{推文ID}`。
+- **英文原贴正文翻译策略（适用所有英文源，硬约束）**：**所有**英文源都按这套混合策略翻译，禁止出现"英文原文 + 英文摘要"或"只翻标题不翻正文"。覆盖范围明确列举：
+  - **AI HOT API 返回的英文条目**（标题/摘要都是英文的）→ 走混合策略
+  - **X.com 英文帖子** → 走混合策略
+  - **Reddit 英文帖子正文与热门评论** → 走混合策略
+  - **HuggingFace 论文摘要与标题** → 走混合策略
+  - **YouTube 视频简介**（来自搜索页/频道页的 description 字段）→ 走混合策略；视频字幕（`/media/youtube-content` skill 拉的）→ 章节标题/摘要/引用全部走混合策略
+  - **Podcast 转录文本**（来自 Follow Builders Feed 的 `feed-podcasts.json`）→ 走混合策略
+  - **即刻英文内容** → 走混合策略
+  - **其他英文站点**（Hacker News / The Verge / Bloomberg 等 RSS）→ 走混合策略
+  - **中文源帖子**（X.com 中文 / Reddit 中文 / 即刻中文）按现有"中文化呈现"规则不变，本身就是中文不需要翻译
+
+  混合策略细节：
+  - **保留英文（不翻译）**：技术术语、模型/产品/API/人名/公司/库名、代码片段、命令行/配置示例、专有名词、行业固定缩写（如 LLM、AGI、RLHF、RAG、GPU、CUDA）
+  - **意译为中文**：自然语言论述、观点、解释性句子、过渡句、举例说明
+  - **首译术语**：英文帖子中首次出现的核心概念，给出"中文译名（English original）"格式，后续只用中文译名
+  - **不做整段直译**：保留英文原贴的关键术语 + 意译自然语言论述，而不是逐句翻译整段英文原文
+
+  **质量自检**（subagent 在落盘前自查，主代理合并前再查一次）：
+  - 扫描所有"摘要"列、播客摘要、章节描述、引言段——**任何一句英文自然语言句子都必须翻译**
+  - 仅允许保留英文的字段：专有名词、技术术语、代码/命令、URL、引用块里的原文（如果整段作为引用块附在条目尾部）
+  - 发现漏翻译的英文句子 → 当场补翻译，不留到 humanize 阶段
+
+#### 步骤 3.5：YouTube 视频深度总结（软技能类强制）
+
+> 仅适用于软技能类（思维模型 / 家庭教育 / 投资管理）和其他将 YouTube 列入 `优先平台` 的主题。技术类主题从 YouTube 拿到的视频不在此强制范围内，仍按"步骤 3"的通用规则处理。
+
+凡是从 YouTube 搜索页 / 频道页提取到、且准备写入报告的**每一条**视频，**必须**额外调用 `/media/youtube-content` skill 拉取字幕并生成结构化总结，不能只靠 YouTube 页面上的简介/标题/首句。
+
+执行流程：
+
+1. **收集候选**：在 `步骤 3` 中按 YouTube 模板提取的视频条目（含视频 URL、标题、频道）整理成待处理列表
+2. **拉取字幕**：对每条视频依次执行：
+
+   ```bash
+   uv run python3 /Users/jiajie/.hermes/skills/media/youtube-content/scripts/fetch_transcript.py "<视频 URL>" --text-only --timestamps
+   ```
+
+   - 依赖未装时先 `uv pip install youtube-transcript-api`
+   - 字幕为空/被禁用/私密视频 → 跳过该视频，在该条记录的"备注"列写"字幕不可用，仅保留 YouTube 简介"
+3. **生成结构化总结**：调用 `/media/youtube-content` skill 提供的输出格式（任选其一，按视频价值判断）：
+   - **章节版**（长视频 / 教程）：时间戳 + 主题分组，**完整列出所有章节**，不截断
+   - **摘要版**（默认）：**覆盖全部核心观点和结论**，按需可长可短，**不限制 5-10 句**——长视频可以十几句、二十句，**禁止用 `…` 收尾**
+   - **章节摘要版**：每个章节一段中文小结，章节全部列出
+   - **引用版**：抽取金句配时间戳，**所有有价值的金句都列出**，不限制数量
+4. **写入表格**：将结构化总结以"📺 深度总结"子小节挂在该视频条目下方，**保留**原 YouTube 模板行的所有字段（标题、链接、播放量等）
+
+模板示例：
+
+```markdown
+| # | 视频 | 频道 | 👀 | 发布 | 简介 |
+|---|------|------|-----|------|------|
+| 1 | [视频标题](视频链接) | 频道名 | 播放量 | 发布时间 | YouTube 简介完整中文翻译/概述 |
+
+#### 📺 视频 1 深度总结（/media/youtube-content）
+
+**章节**（完整列出，不截断）
+- `00:00` 开场：介绍本集要解决的问题
+- `03:45` 背景：现有方案的不足
+- `12:20` 核心方法：提出新方案
+- `25:10` 实验结果与对比
+- `38:40` 局限性与未来工作
+
+**摘要**：完整中文概述，覆盖视频全部核心观点和结论。短则 3-5 句，长则 15-20 句，按视频实际内容决定。
+
+**关键引用**
+> "金句原文" — 12:34
+> "另一句金句" — 24:10
+> "第三句金句" — 36:50
+```
+
+异常处理：
+
+- 字幕拉取失败 → 跳过 `/media/youtube-content` 流程，仅保留原 YouTube 简介，并在该条"备注"列写明"字幕不可用"
+- 字幕超过 50K 字符 → 按 `/media/youtube-content` 的"Chunk if needed"规则分块总结后再合并
+- 多个视频 → 逐条处理，不要并发（避免 IP 限流）
 
 #### 步骤 4：写入文件
 
@@ -208,7 +298,7 @@
 ```markdown
 | # | 视频 | 频道 | 👀 | 发布 | 简介 |
 |---|------|------|-----|------|------|
-| 1 | [视频标题](视频链接) | 频道名 | 播放量 | 发布时间 | 视频核心内容的 1-2 句中文摘要 |
+| 1 | [视频标题](视频链接) | 频道名 | 播放量 | 发布时间 | 视频核心内容的完整中文摘要（不截断） |
 ```
 
 **Reddit 帖子表格模板：**
@@ -216,7 +306,7 @@
 ```markdown
 | # | 帖子 | 子版块 | 👍 | 💬 | 摘要 |
 |---|------|--------|-----|-----|------|
-| 1 | [帖子标题](帖子链接) | r/子版块名 | upvotes | 评论数 | 帖子核心观点的 1-2 句中文摘要 |
+| 1 | [帖子标题](帖子链接) | r/子版块名 | upvotes | 评论数 | 帖子核心观点的完整中文摘要（不截断） |
 ```
 
 > **Reddit 检索策略**：优先用浏览器打开用户配置中指定的子版块（subreddit）的本周热门帖子，再用关键词搜索作为补充。子版块 URL 格式为 `https://www.reddit.com/r/{子版块名}/top/?t=week`。`https://www.reddit.com/r/{子版块名}/top.json` 只允许在浏览器页面不可用或作为补充校验时使用。
@@ -236,20 +326,29 @@
 
 ### 步骤 2：逐一访问并提取
 
-**browser-use:browser（Codex 默认）：**
-1. 使用 Codex 内置浏览器访问账号主页（如 `https://x.com/karpathy`）
-2. 使用页面截图、DOM/页面检查或浏览器自动化结果提取最新帖子
+**`/ego-browser` skill（Hermes 唯一浏览器）：**
 
-**browser_mcp（备选）：**
-1. 使用 `browser_navigate` 访问账号主页（如 `https://x.com/karpathy`）
-2. 使用 `browser_snapshot` 获取页面内容
+在 Bash 中执行 `ego-browser nodejs <<'EOF' ... EOF` heredoc 脚本，调用 `/ego-browser` 提供的 helper：
 
-**browser_subagent（备选）：**
-向 `browser_subagent` 下发任务，例如：
-> 导航到 `https://x.com/karpathy`，提取该用户最新的 3 条帖子，包括发布时间、内容摘要、点赞数、转发数、浏览量和帖子链接。
+```js
+const task = await useOrCreateTaskSpace('hot-info-crawler accounts')
+await openOrReuseTab('https://x.com/<username>', { wait: true, timeout: 20 })
+const tree = await snapshotText()
+cliLog(tree)
+// 或用 js() 提取结构化数据
+const posts = await js(String.raw`(() => {
+  return [...document.querySelectorAll('article')].slice(0, 3).map(a => ({
+    text: a.innerText,
+    links: [...a.querySelectorAll('a[href*="/status/"]')].map(x => x.href),
+  }))
+})()`)
+cliLog(JSON.stringify(posts, null, 2))
+await completeTaskSpace(task.id, { keep: false })
+```
 
-**read_url_content（兜底）：**
-使用 `read_url_content` 获取账号主页内容。注意：X.com 动态内容可能无法通过此方式获取。
+**`read_url_content`（兜底）：**
+
+只有当 `/ego-browser` 不可用时，才回退到 `read_url_content` 获取账号主页内容。注意：X.com 动态内容通常无法通过纯 HTTP 抓取获取，必须依赖浏览器。
 
 ### 步骤 3：数据提取
 
@@ -314,13 +413,13 @@ Start-Process "obsidian://open?vault=claudesidian"
 
 ## 六、注意事项
 
-- 在检索开始前，先通过检测流程确定当前可用的工具层级，整个任务期间保持同一层级；Codex 环境中，思维模型、家庭教育、投资管理等远程软技能主题默认从 `[@chrome](plugin://chrome@openai-bundled)` 开始
-- 思维模型、家庭教育、投资管理等软技能主题必须先走浏览器页面抓取；如果用了 JSON / HTTP 兜底，必须在输出文件备注中说明“浏览器不可用 / 页面失败 / 登录态不足”等具体原因
+- 在检索开始前确认 `/ego-browser` skill 可用，整个任务期间统一使用 `/ego-browser`；思维模型、家庭教育、投资管理等远程软技能主题默认从 `/ego-browser` 开始
+- 思维模型、家庭教育、投资管理等软技能主题必须先走浏览器页面抓取；如果用了 JSON / HTTP 兜底，必须在输出文件备注中说明"ego-browser 不可用 / 页面失败 / 登录态不足"等具体原因
 - **每个板块完成后必须立即写入文件**，不要在内存中积累多个板块后一次性写入
 - 如果某个主题中文关键词信息不足，自动尝试英文关键词（即刻除外，即刻仅使用中文）
 - 关注账号列表可随时在 `~/.hot-info-crawler/user_config.md` 中增删修改
 - 即刻搜索默认直接通过 URL 传参进行综合搜索
-- 使用 `browser_subagent` 或 `read_url_content` 时，需登录平台的信息获取可能受限，这属于预期行为
+- 使用 `read_url_content` 兜底时，需登录平台的信息获取可能受限，这属于预期行为
 - **断点续跑**：通过 `<!-- section:xxx_done -->` 标记判断已完成板块，跳过后从下一个继续
 - **所有用户特定配置**（主题、账号、Feed 源、平台开关）均从 `~/.hot-info-crawler/user_config.md` 读取，skill 文件中不包含任何用户特定内容
 - **Obsidian 同步**：每次抓取完成后通过 `obsidian://` URI 唤起 Obsidian，配合 Remotely Save 自动同步；如 Obsidian 未运行则跳过并提示用户
