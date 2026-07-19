@@ -1,0 +1,181 @@
+{
+  "name": "Settings",
+  "slug": "settings",
+  "keywords": [
+    "gear",
+    "config",
+    "tool",
+    "设置",
+    "配置",
+    "工具"
+  ],
+  "description": "A simple gear",
+  "sourceLibrary": "core-handdrawn.excalidrawlib",
+  "elements": [
+    {
+      "id": "gear-outer",
+      "type": "ellipse",
+      "x": 14,
+      "y": 14,
+      "width": 54,
+      "height": 54,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "#eadcf8",
+      "fillStyle": "solid",
+      "strokeWidth": 3,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "gear-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 17001,
+      "version": 1,
+      "versionNonce": 27001,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "gear-inner",
+      "type": "ellipse",
+      "x": 31,
+      "y": 31,
+      "width": 20,
+      "height": 20,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "#fffdf8",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "gear-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 17002,
+      "version": 1,
+      "versionNonce": 27002,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "gear-teeth",
+      "type": "line",
+      "x": 0,
+      "y": 0,
+      "width": 82,
+      "height": 82,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 3,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "gear-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 17003,
+      "version": 1,
+      "versionNonce": 27003,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          41,
+          0
+        ],
+        [
+          41,
+          14
+        ],
+        [
+          41,
+          68
+        ],
+        [
+          41,
+          82
+        ],
+        [
+          41,
+          41
+        ],
+        [
+          0,
+          41
+        ],
+        [
+          14,
+          41
+        ],
+        [
+          68,
+          41
+        ],
+        [
+          82,
+          41
+        ],
+        [
+          41,
+          41
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          22,
+          22
+        ],
+        [
+          60,
+          60
+        ],
+        [
+          70,
+          70
+        ],
+        [
+          41,
+          41
+        ],
+        [
+          70,
+          12
+        ],
+        [
+          60,
+          22
+        ],
+        [
+          22,
+          60
+        ],
+        [
+          12,
+          70
+        ]
+      ]
+    }
+  ]
+}

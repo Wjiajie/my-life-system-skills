@@ -1,0 +1,206 @@
+{
+  "name": "Document",
+  "slug": "document",
+  "keywords": [
+    "file",
+    "paper",
+    "文档",
+    "文件",
+    "说明"
+  ],
+  "description": "A folded document with text lines",
+  "sourceLibrary": "core-handdrawn.excalidrawlib",
+  "elements": [
+    {
+      "id": "doc-box",
+      "type": "rectangle",
+      "x": 0,
+      "y": 0,
+      "width": 64,
+      "height": 82,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "#fffdf8",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "doc-group"
+      ],
+      "frameId": null,
+      "roundness": {
+        "type": 3
+      },
+      "seed": 11001,
+      "version": 1,
+      "versionNonce": 21001,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "doc-fold",
+      "type": "line",
+      "x": 43,
+      "y": 0,
+      "width": 21,
+      "height": 21,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "doc-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 11002,
+      "version": 1,
+      "versionNonce": 21002,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          21
+        ],
+        [
+          21,
+          21
+        ]
+      ]
+    },
+    {
+      "id": "doc-line1",
+      "type": "line",
+      "x": 13,
+      "y": 35,
+      "width": 38,
+      "height": 0,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "doc-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 11003,
+      "version": 1,
+      "versionNonce": 21003,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          38,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "doc-line2",
+      "type": "line",
+      "x": 13,
+      "y": 49,
+      "width": 34,
+      "height": 0,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "doc-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 11004,
+      "version": 1,
+      "versionNonce": 21004,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          34,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "doc-line3",
+      "type": "line",
+      "x": 13,
+      "y": 63,
+      "width": 28,
+      "height": 0,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "doc-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 11005,
+      "version": 1,
+      "versionNonce": 21005,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          28,
+          0
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,204 @@
+{
+  "type": "excalidrawlib",
+  "version": 2,
+  "source": "excalidraw-diagram skill",
+  "name": "Core Handdrawn",
+  "license": "CC0-1.0",
+  "libraryItems": [
+    {
+      "id": "lib-document",
+      "status": "published",
+      "created": 1784438000000,
+      "name": "Document",
+      "keywords": ["file", "paper", "文档", "文件", "说明"],
+      "description": "A folded document with text lines",
+      "elements": [
+        {"id":"doc-box","type":"rectangle","x":0,"y":0,"width":64,"height":82,"angle":0,"strokeColor":"#343a40","backgroundColor":"#fffdf8","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["doc-group"],"frameId":null,"roundness":{"type":3},"seed":11001,"version":1,"versionNonce":21001,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"doc-fold","type":"line","x":43,"y":0,"width":21,"height":21,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["doc-group"],"frameId":null,"roundness":null,"seed":11002,"version":1,"versionNonce":21002,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[0,21],[21,21]]},
+        {"id":"doc-line1","type":"line","x":13,"y":35,"width":38,"height":0,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["doc-group"],"frameId":null,"roundness":null,"seed":11003,"version":1,"versionNonce":21003,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[38,0]]},
+        {"id":"doc-line2","type":"line","x":13,"y":49,"width":34,"height":0,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["doc-group"],"frameId":null,"roundness":null,"seed":11004,"version":1,"versionNonce":21004,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[34,0]]},
+        {"id":"doc-line3","type":"line","x":13,"y":63,"width":28,"height":0,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["doc-group"],"frameId":null,"roundness":null,"seed":11005,"version":1,"versionNonce":21005,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[28,0]]}
+      ]
+    },
+    {
+      "id": "lib-folder",
+      "status": "published",
+      "created": 1784438000001,
+      "name": "Folder",
+      "keywords": ["directory", "storage", "文件夹", "目录", "资产"],
+      "description": "A rounded folder",
+      "elements": [
+        {"id":"folder-tab","type":"line","x":4,"y":17,"width":52,"height":13,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["folder-group"],"frameId":null,"roundness":null,"seed":12001,"version":1,"versionNonce":22001,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[18,0],[27,-13],[46,-13],[52,0]]},
+        {"id":"folder-box","type":"rectangle","x":0,"y":17,"width":82,"height":56,"angle":0,"strokeColor":"#343a40","backgroundColor":"#fff0b8","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["folder-group"],"frameId":null,"roundness":{"type":3},"seed":12002,"version":1,"versionNonce":22002,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false}
+      ]
+    },
+    {
+      "id": "lib-search",
+      "status": "published",
+      "created": 1784438000002,
+      "name": "Search",
+      "keywords": ["find", "lookup", "magnifier", "搜索", "查找", "检索"],
+      "description": "A magnifying glass",
+      "elements": [
+        {"id":"search-lens","type":"ellipse","x":0,"y":0,"width":50,"height":50,"angle":0,"strokeColor":"#343a40","backgroundColor":"#fffdf8","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["search-group"],"frameId":null,"roundness":null,"seed":13001,"version":1,"versionNonce":23001,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"search-handle","type":"line","x":41,"y":41,"width":29,"height":29,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":3,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["search-group"],"frameId":null,"roundness":null,"seed":13002,"version":1,"versionNonce":23002,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[29,29]]}
+      ]
+    },
+    {
+      "id": "lib-magic",
+      "status": "published",
+      "created": 1784438000003,
+      "name": "Magic Wand",
+      "keywords": ["spark", "idea", "create", "魔法", "灵感", "生成"],
+      "description": "A wand with hand-drawn sparkles",
+      "elements": [
+        {"id":"magic-wand","type":"line","x":18,"y":28,"width":54,"height":54,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":3,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["magic-group"],"frameId":null,"roundness":null,"seed":14001,"version":1,"versionNonce":24001,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,54],[54,0]]},
+        {"id":"magic-star1","type":"line","x":45,"y":0,"width":28,"height":28,"angle":0,"strokeColor":"#d97706","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["magic-group"],"frameId":null,"roundness":null,"seed":14002,"version":1,"versionNonce":24002,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[14,0],[14,28],[14,14],[0,14],[28,14]]},
+        {"id":"magic-star2","type":"line","x":0,"y":19,"width":18,"height":18,"angle":0,"strokeColor":"#d97706","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["magic-group"],"frameId":null,"roundness":null,"seed":14003,"version":1,"versionNonce":24003,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[9,0],[9,18],[9,9],[0,9],[18,9]]}
+      ]
+    },
+    {
+      "id": "lib-user",
+      "status": "published",
+      "created": 1784438000004,
+      "name": "User",
+      "keywords": ["person", "human", "author", "用户", "作者", "人物"],
+      "description": "A friendly person",
+      "elements": [
+        {"id":"user-head","type":"ellipse","x":23,"y":0,"width":34,"height":34,"angle":0,"strokeColor":"#343a40","backgroundColor":"#f8d8c4","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["user-group"],"frameId":null,"roundness":null,"seed":15001,"version":1,"versionNonce":25001,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"user-body","type":"line","x":40,"y":34,"width":0,"height":44,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":3,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["user-group"],"frameId":null,"roundness":null,"seed":15002,"version":1,"versionNonce":25002,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[0,44]]},
+        {"id":"user-arms","type":"line","x":12,"y":47,"width":56,"height":18,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":3,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["user-group"],"frameId":null,"roundness":null,"seed":15003,"version":1,"versionNonce":25003,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,18],[28,0],[56,18]]},
+        {"id":"user-legs","type":"line","x":22,"y":78,"width":36,"height":28,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":3,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["user-group"],"frameId":null,"roundness":null,"seed":15004,"version":1,"versionNonce":25004,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[18,0],[0,28],[18,0],[36,28]]}
+      ]
+    },
+    {
+      "id": "lib-database",
+      "status": "published",
+      "created": 1784438000005,
+      "name": "Database",
+      "keywords": ["data", "storage", "memory", "数据库", "数据", "存储"],
+      "description": "A stacked database cylinder",
+      "elements": [
+        {"id":"db-body","type":"rectangle","x":0,"y":14,"width":76,"height":58,"angle":0,"strokeColor":"#343a40","backgroundColor":"#dbe7ff","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["db-group"],"frameId":null,"roundness":null,"seed":16001,"version":1,"versionNonce":26001,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"db-top","type":"ellipse","x":0,"y":0,"width":76,"height":28,"angle":0,"strokeColor":"#343a40","backgroundColor":"#dbe7ff","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["db-group"],"frameId":null,"roundness":null,"seed":16002,"version":1,"versionNonce":26002,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"db-mid","type":"ellipse","x":0,"y":28,"width":76,"height":28,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["db-group"],"frameId":null,"roundness":null,"seed":16003,"version":1,"versionNonce":26003,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"db-bottom","type":"ellipse","x":0,"y":58,"width":76,"height":28,"angle":0,"strokeColor":"#343a40","backgroundColor":"#dbe7ff","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["db-group"],"frameId":null,"roundness":null,"seed":16004,"version":1,"versionNonce":26004,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false}
+      ]
+    },
+    {
+      "id": "lib-settings",
+      "status": "published",
+      "created": 1784438000006,
+      "name": "Settings",
+      "keywords": ["gear", "config", "tool", "设置", "配置", "工具"],
+      "description": "A simple gear",
+      "elements": [
+        {"id":"gear-outer","type":"ellipse","x":14,"y":14,"width":54,"height":54,"angle":0,"strokeColor":"#343a40","backgroundColor":"#eadcf8","fillStyle":"solid","strokeWidth":3,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["gear-group"],"frameId":null,"roundness":null,"seed":17001,"version":1,"versionNonce":27001,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"gear-inner","type":"ellipse","x":31,"y":31,"width":20,"height":20,"angle":0,"strokeColor":"#343a40","backgroundColor":"#fffdf8","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["gear-group"],"frameId":null,"roundness":null,"seed":17002,"version":1,"versionNonce":27002,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"gear-teeth","type":"line","x":0,"y":0,"width":82,"height":82,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":3,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["gear-group"],"frameId":null,"roundness":null,"seed":17003,"version":1,"versionNonce":27003,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[41,0],[41,14],[41,68],[41,82],[41,41],[0,41],[14,41],[68,41],[82,41],[41,41],[12,12],[22,22],[60,60],[70,70],[41,41],[70,12],[60,22],[22,60],[12,70]]}
+      ]
+    },
+    {
+      "id": "lib-chat",
+      "status": "published",
+      "created": 1784438000007,
+      "name": "Conversation",
+      "keywords": ["chat", "message", "talk", "对话", "沟通", "消息"],
+      "description": "A speech bubble with message lines",
+      "elements": [
+        {"id":"chat-box","type":"rectangle","x":0,"y":0,"width":84,"height":58,"angle":0,"strokeColor":"#343a40","backgroundColor":"#dff3df","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["chat-group"],"frameId":null,"roundness":{"type":3},"seed":18001,"version":1,"versionNonce":28001,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"chat-tail","type":"line","x":14,"y":56,"width":22,"height":18,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["chat-group"],"frameId":null,"roundness":null,"seed":18002,"version":1,"versionNonce":28002,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[22,0],[0,18],[6,0]]},
+        {"id":"chat-line1","type":"line","x":16,"y":19,"width":52,"height":0,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["chat-group"],"frameId":null,"roundness":null,"seed":18003,"version":1,"versionNonce":28003,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[52,0]]},
+        {"id":"chat-line2","type":"line","x":16,"y":36,"width":38,"height":0,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["chat-group"],"frameId":null,"roundness":null,"seed":18004,"version":1,"versionNonce":28004,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[38,0]]}
+      ]
+    },
+    {
+      "id": "lib-cloud",
+      "status": "published",
+      "created": 1784438000008,
+      "name": "Cloud",
+      "keywords": ["context", "remote", "abstract", "云", "上下文", "抽象"],
+      "description": "An overlapping cloud",
+      "elements": [
+        {"id":"cloud-left","type":"ellipse","x":0,"y":24,"width":52,"height":42,"angle":0,"strokeColor":"#343a40","backgroundColor":"#dbe7ff","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["cloud-group"],"frameId":null,"roundness":null,"seed":19001,"version":1,"versionNonce":29001,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"cloud-mid","type":"ellipse","x":25,"y":0,"width":58,"height":58,"angle":0,"strokeColor":"#343a40","backgroundColor":"#dbe7ff","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["cloud-group"],"frameId":null,"roundness":null,"seed":19002,"version":1,"versionNonce":29002,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"cloud-right","type":"ellipse","x":58,"y":23,"width":52,"height":43,"angle":0,"strokeColor":"#343a40","backgroundColor":"#dbe7ff","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["cloud-group"],"frameId":null,"roundness":null,"seed":19003,"version":1,"versionNonce":29003,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"cloud-base","type":"rectangle","x":24,"y":35,"width":65,"height":31,"angle":0,"strokeColor":"#dbe7ff","backgroundColor":"#dbe7ff","fillStyle":"solid","strokeWidth":1,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["cloud-group"],"frameId":null,"roundness":null,"seed":19004,"version":1,"versionNonce":29004,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false}
+      ]
+    },
+    {
+      "id": "lib-layers",
+      "status": "published",
+      "created": 1784438000009,
+      "name": "Layers",
+      "keywords": ["stack", "architecture", "levels", "层级", "结构", "架构"],
+      "description": "Three stacked diamond layers",
+      "elements": [
+        {"id":"layer-bottom","type":"line","x":0,"y":38,"width":84,"height":38,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["layers-group"],"frameId":null,"roundness":null,"seed":20001,"version":1,"versionNonce":30001,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[42,38],[84,0]]},
+        {"id":"layer-mid","type":"line","x":0,"y":19,"width":84,"height":38,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["layers-group"],"frameId":null,"roundness":null,"seed":20002,"version":1,"versionNonce":30002,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[42,38],[84,0]]},
+        {"id":"layer-top","type":"line","x":0,"y":0,"width":84,"height":38,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["layers-group"],"frameId":null,"roundness":null,"seed":20003,"version":1,"versionNonce":30003,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,19],[42,0],[84,19],[42,38],[0,19]]}
+      ]
+    },
+    {
+      "id": "lib-workflow",
+      "status": "published",
+      "created": 1784438000010,
+      "name": "Workflow",
+      "keywords": ["process", "pipeline", "flow", "流程", "工作流", "管线"],
+      "description": "Three connected process nodes",
+      "elements": [
+        {"id":"flow-node1","type":"ellipse","x":0,"y":21,"width":34,"height":34,"angle":0,"strokeColor":"#343a40","backgroundColor":"#f8d8c4","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["flow-group"],"frameId":null,"roundness":null,"seed":21001,"version":1,"versionNonce":31001,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"flow-arrow1","type":"arrow","x":34,"y":38,"width":36,"height":0,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["flow-group"],"frameId":null,"roundness":null,"seed":21002,"version":1,"versionNonce":31002,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[36,0]],"startBinding":null,"endBinding":null,"startArrowhead":null,"endArrowhead":"arrow"},
+        {"id":"flow-node2","type":"rectangle","x":72,"y":13,"width":48,"height":50,"angle":0,"strokeColor":"#343a40","backgroundColor":"#fff0b8","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["flow-group"],"frameId":null,"roundness":{"type":3},"seed":21003,"version":1,"versionNonce":31003,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"flow-arrow2","type":"arrow","x":120,"y":38,"width":36,"height":0,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["flow-group"],"frameId":null,"roundness":null,"seed":21004,"version":1,"versionNonce":31004,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[36,0]],"startBinding":null,"endBinding":null,"startArrowhead":null,"endArrowhead":"arrow"},
+        {"id":"flow-node3","type":"diamond","x":158,"y":10,"width":58,"height":58,"angle":0,"strokeColor":"#343a40","backgroundColor":"#dff3df","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["flow-group"],"frameId":null,"roundness":null,"seed":21005,"version":1,"versionNonce":31005,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false}
+      ]
+    },
+    {
+      "id": "lib-checklist",
+      "status": "published",
+      "created": 1784438000011,
+      "name": "Checklist",
+      "keywords": ["validate", "quality", "done", "检查", "验证", "完成"],
+      "description": "A quality checklist",
+      "elements": [
+        {"id":"check-box","type":"rectangle","x":0,"y":0,"width":78,"height":92,"angle":0,"strokeColor":"#343a40","backgroundColor":"#fffdf8","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["check-group"],"frameId":null,"roundness":{"type":3},"seed":22001,"version":1,"versionNonce":32001,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"check-1","type":"line","x":12,"y":22,"width":15,"height":10,"angle":0,"strokeColor":"#0f766e","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":3,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["check-group"],"frameId":null,"roundness":null,"seed":22002,"version":1,"versionNonce":32002,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,4],[5,10],[15,0]]},
+        {"id":"check-line1","type":"line","x":34,"y":26,"width":30,"height":0,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["check-group"],"frameId":null,"roundness":null,"seed":22003,"version":1,"versionNonce":32003,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[30,0]]},
+        {"id":"check-2","type":"line","x":12,"y":47,"width":15,"height":10,"angle":0,"strokeColor":"#0f766e","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":3,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["check-group"],"frameId":null,"roundness":null,"seed":22004,"version":1,"versionNonce":32004,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,4],[5,10],[15,0]]},
+        {"id":"check-line2","type":"line","x":34,"y":51,"width":30,"height":0,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["check-group"],"frameId":null,"roundness":null,"seed":22005,"version":1,"versionNonce":32005,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[30,0]]},
+        {"id":"check-3","type":"line","x":12,"y":72,"width":15,"height":10,"angle":0,"strokeColor":"#0f766e","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":3,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["check-group"],"frameId":null,"roundness":null,"seed":22006,"version":1,"versionNonce":32006,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,4],[5,10],[15,0]]},
+        {"id":"check-line3","type":"line","x":34,"y":76,"width":30,"height":0,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["check-group"],"frameId":null,"roundness":null,"seed":22007,"version":1,"versionNonce":32007,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[30,0]]}
+      ]
+    },
+    {
+      "id": "lib-image",
+      "status": "published",
+      "created": 1784438000012,
+      "name": "Picture",
+      "keywords": ["image", "visual", "canvas", "图片", "视觉", "画布"],
+      "description": "A framed landscape picture",
+      "elements": [
+        {"id":"pic-frame","type":"rectangle","x":0,"y":0,"width":92,"height":72,"angle":0,"strokeColor":"#343a40","backgroundColor":"#fffdf8","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["pic-group"],"frameId":null,"roundness":{"type":3},"seed":23001,"version":1,"versionNonce":33001,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"pic-sun","type":"ellipse","x":61,"y":12,"width":16,"height":16,"angle":0,"strokeColor":"#d97706","backgroundColor":"#fff0b8","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["pic-group"],"frameId":null,"roundness":null,"seed":23002,"version":1,"versionNonce":33002,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"pic-mountain","type":"line","x":9,"y":34,"width":74,"height":27,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["pic-group"],"frameId":null,"roundness":null,"seed":23003,"version":1,"versionNonce":33003,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,27],[23,0],[39,18],[51,6],[74,27]]}
+      ]
+    },
+    {
+      "id": "lib-agent",
+      "status": "published",
+      "created": 1784438000013,
+      "name": "Agent",
+      "keywords": ["robot", "ai", "assistant", "智能体", "代理", "助手"],
+      "description": "A friendly agent head",
+      "elements": [
+        {"id":"agent-antenna","type":"line","x":40,"y":0,"width":0,"height":18,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["agent-group"],"frameId":null,"roundness":null,"seed":24001,"version":1,"versionNonce":34001,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[0,18]]},
+        {"id":"agent-dot","type":"ellipse","x":35,"y":0,"width":10,"height":10,"angle":0,"strokeColor":"#343a40","backgroundColor":"#f8d8c4","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["agent-group"],"frameId":null,"roundness":null,"seed":24002,"version":1,"versionNonce":34002,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"agent-head","type":"rectangle","x":0,"y":18,"width":80,"height":62,"angle":0,"strokeColor":"#343a40","backgroundColor":"#eadcf8","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["agent-group"],"frameId":null,"roundness":{"type":3},"seed":24003,"version":1,"versionNonce":34003,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"agent-eye1","type":"ellipse","x":19,"y":39,"width":10,"height":10,"angle":0,"strokeColor":"#343a40","backgroundColor":"#343a40","fillStyle":"solid","strokeWidth":1,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["agent-group"],"frameId":null,"roundness":null,"seed":24004,"version":1,"versionNonce":34004,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"agent-eye2","type":"ellipse","x":51,"y":39,"width":10,"height":10,"angle":0,"strokeColor":"#343a40","backgroundColor":"#343a40","fillStyle":"solid","strokeWidth":1,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["agent-group"],"frameId":null,"roundness":null,"seed":24005,"version":1,"versionNonce":34005,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false},
+        {"id":"agent-smile","type":"line","x":25,"y":58,"width":30,"height":8,"angle":0,"strokeColor":"#343a40","backgroundColor":"transparent","fillStyle":"solid","strokeWidth":2,"strokeStyle":"solid","roughness":1,"opacity":100,"groupIds":["agent-group"],"frameId":null,"roundness":null,"seed":24006,"version":1,"versionNonce":34006,"isDeleted":false,"boundElements":null,"updated":1,"link":null,"locked":false,"points":[[0,0],[15,8],[30,0]]}
+      ]
+    }
+  ]
+}

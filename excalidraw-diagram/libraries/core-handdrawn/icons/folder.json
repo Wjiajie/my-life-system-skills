@@ -1,0 +1,97 @@
+{
+  "name": "Folder",
+  "slug": "folder",
+  "keywords": [
+    "directory",
+    "storage",
+    "文件夹",
+    "目录",
+    "资产"
+  ],
+  "description": "A rounded folder",
+  "sourceLibrary": "core-handdrawn.excalidrawlib",
+  "elements": [
+    {
+      "id": "folder-tab",
+      "type": "line",
+      "x": 4,
+      "y": 17,
+      "width": 52,
+      "height": 13,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "folder-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 12001,
+      "version": 1,
+      "versionNonce": 22001,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          18,
+          0
+        ],
+        [
+          27,
+          -13
+        ],
+        [
+          46,
+          -13
+        ],
+        [
+          52,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "folder-box",
+      "type": "rectangle",
+      "x": 0,
+      "y": 17,
+      "width": 82,
+      "height": 56,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "#fff0b8",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "folder-group"
+      ],
+      "frameId": null,
+      "roundness": {
+        "type": 3
+      },
+      "seed": 12002,
+      "version": 1,
+      "versionNonce": 22002,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false
+    }
+  ]
+}

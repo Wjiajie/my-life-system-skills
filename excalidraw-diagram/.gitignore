@@ -1,0 +1,5 @@
+.venv/
+*.png
+!examples/handdrawn-whiteboard-3x4/*.png
+uv.lock
+__pycache__/

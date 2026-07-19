@@ -1,0 +1,168 @@
+{
+  "name": "Conversation",
+  "slug": "conversation",
+  "keywords": [
+    "chat",
+    "message",
+    "talk",
+    "对话",
+    "沟通",
+    "消息"
+  ],
+  "description": "A speech bubble with message lines",
+  "sourceLibrary": "core-handdrawn.excalidrawlib",
+  "elements": [
+    {
+      "id": "chat-box",
+      "type": "rectangle",
+      "x": 0,
+      "y": 0,
+      "width": 84,
+      "height": 58,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "#dff3df",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "chat-group"
+      ],
+      "frameId": null,
+      "roundness": {
+        "type": 3
+      },
+      "seed": 18001,
+      "version": 1,
+      "versionNonce": 28001,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "chat-tail",
+      "type": "line",
+      "x": 14,
+      "y": 56,
+      "width": 22,
+      "height": 18,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "chat-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 18002,
+      "version": 1,
+      "versionNonce": 28002,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          22,
+          0
+        ],
+        [
+          0,
+          18
+        ],
+        [
+          6,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "chat-line1",
+      "type": "line",
+      "x": 16,
+      "y": 19,
+      "width": 52,
+      "height": 0,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "chat-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 18003,
+      "version": 1,
+      "versionNonce": 28003,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          52,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "chat-line2",
+      "type": "line",
+      "x": 16,
+      "y": 36,
+      "width": 38,
+      "height": 0,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "chat-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 18004,
+      "version": 1,
+      "versionNonce": 28004,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          38,
+          0
+        ]
+      ]
+    }
+  ]
+}

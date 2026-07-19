@@ -1,0 +1,293 @@
+{
+  "name": "Checklist",
+  "slug": "checklist",
+  "keywords": [
+    "validate",
+    "quality",
+    "done",
+    "检查",
+    "验证",
+    "完成"
+  ],
+  "description": "A quality checklist",
+  "sourceLibrary": "core-handdrawn.excalidrawlib",
+  "elements": [
+    {
+      "id": "check-box",
+      "type": "rectangle",
+      "x": 0,
+      "y": 0,
+      "width": 78,
+      "height": 92,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "#fffdf8",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "check-group"
+      ],
+      "frameId": null,
+      "roundness": {
+        "type": 3
+      },
+      "seed": 22001,
+      "version": 1,
+      "versionNonce": 32001,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "check-1",
+      "type": "line",
+      "x": 12,
+      "y": 22,
+      "width": 15,
+      "height": 10,
+      "angle": 0,
+      "strokeColor": "#0f766e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 3,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "check-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 22002,
+      "version": 1,
+      "versionNonce": 32002,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          4
+        ],
+        [
+          5,
+          10
+        ],
+        [
+          15,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "check-line1",
+      "type": "line",
+      "x": 34,
+      "y": 26,
+      "width": 30,
+      "height": 0,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "check-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 22003,
+      "version": 1,
+      "versionNonce": 32003,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          30,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "check-2",
+      "type": "line",
+      "x": 12,
+      "y": 47,
+      "width": 15,
+      "height": 10,
+      "angle": 0,
+      "strokeColor": "#0f766e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 3,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "check-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 22004,
+      "version": 1,
+      "versionNonce": 32004,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          4
+        ],
+        [
+          5,
+          10
+        ],
+        [
+          15,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "check-line2",
+      "type": "line",
+      "x": 34,
+      "y": 51,
+      "width": 30,
+      "height": 0,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "check-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 22005,
+      "version": 1,
+      "versionNonce": 32005,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          30,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "check-3",
+      "type": "line",
+      "x": 12,
+      "y": 72,
+      "width": 15,
+      "height": 10,
+      "angle": 0,
+      "strokeColor": "#0f766e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 3,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "check-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 22006,
+      "version": 1,
+      "versionNonce": 32006,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          4
+        ],
+        [
+          5,
+          10
+        ],
+        [
+          15,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "check-line3",
+      "type": "line",
+      "x": 34,
+      "y": 76,
+      "width": 30,
+      "height": 0,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "check-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 22007,
+      "version": 1,
+      "versionNonce": 32007,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          30,
+          0
+        ]
+      ]
+    }
+  ]
+}

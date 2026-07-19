@@ -1,0 +1,244 @@
+{
+  "version": 1,
+  "library": "Core Handdrawn",
+  "source": "core-handdrawn.excalidrawlib",
+  "license": "CC0-1.0",
+  "icons": [
+    {
+      "name": "Agent",
+      "slug": "agent",
+      "file": "icons/agent.json",
+      "keywords": [
+        "robot",
+        "ai",
+        "assistant",
+        "智能体",
+        "代理",
+        "助手"
+      ],
+      "description": "A friendly agent head",
+      "elementCount": 6,
+      "width": 80.0,
+      "height": 80.0
+    },
+    {
+      "name": "Checklist",
+      "slug": "checklist",
+      "file": "icons/checklist.json",
+      "keywords": [
+        "validate",
+        "quality",
+        "done",
+        "检查",
+        "验证",
+        "完成"
+      ],
+      "description": "A quality checklist",
+      "elementCount": 7,
+      "width": 78.0,
+      "height": 92.0
+    },
+    {
+      "name": "Cloud",
+      "slug": "cloud",
+      "file": "icons/cloud.json",
+      "keywords": [
+        "context",
+        "remote",
+        "abstract",
+        "云",
+        "上下文",
+        "抽象"
+      ],
+      "description": "An overlapping cloud",
+      "elementCount": 4,
+      "width": 110.0,
+      "height": 66.0
+    },
+    {
+      "name": "Conversation",
+      "slug": "conversation",
+      "file": "icons/conversation.json",
+      "keywords": [
+        "chat",
+        "message",
+        "talk",
+        "对话",
+        "沟通",
+        "消息"
+      ],
+      "description": "A speech bubble with message lines",
+      "elementCount": 4,
+      "width": 84.0,
+      "height": 74.0
+    },
+    {
+      "name": "Database",
+      "slug": "database",
+      "file": "icons/database.json",
+      "keywords": [
+        "data",
+        "storage",
+        "memory",
+        "数据库",
+        "数据",
+        "存储"
+      ],
+      "description": "A stacked database cylinder",
+      "elementCount": 4,
+      "width": 76.0,
+      "height": 86.0
+    },
+    {
+      "name": "Document",
+      "slug": "document",
+      "file": "icons/document.json",
+      "keywords": [
+        "file",
+        "paper",
+        "文档",
+        "文件",
+        "说明"
+      ],
+      "description": "A folded document with text lines",
+      "elementCount": 5,
+      "width": 64.0,
+      "height": 82.0
+    },
+    {
+      "name": "Folder",
+      "slug": "folder",
+      "file": "icons/folder.json",
+      "keywords": [
+        "directory",
+        "storage",
+        "文件夹",
+        "目录",
+        "资产"
+      ],
+      "description": "A rounded folder",
+      "elementCount": 2,
+      "width": 82.0,
+      "height": 69.0
+    },
+    {
+      "name": "Layers",
+      "slug": "layers",
+      "file": "icons/layers.json",
+      "keywords": [
+        "stack",
+        "architecture",
+        "levels",
+        "层级",
+        "结构",
+        "架构"
+      ],
+      "description": "Three stacked diamond layers",
+      "elementCount": 3,
+      "width": 84.0,
+      "height": 76.0
+    },
+    {
+      "name": "Magic Wand",
+      "slug": "magic-wand",
+      "file": "icons/magic-wand.json",
+      "keywords": [
+        "spark",
+        "idea",
+        "create",
+        "魔法",
+        "灵感",
+        "生成"
+      ],
+      "description": "A wand with hand-drawn sparkles",
+      "elementCount": 3,
+      "width": 73.0,
+      "height": 82.0
+    },
+    {
+      "name": "Picture",
+      "slug": "picture",
+      "file": "icons/picture.json",
+      "keywords": [
+        "image",
+        "visual",
+        "canvas",
+        "图片",
+        "视觉",
+        "画布"
+      ],
+      "description": "A framed landscape picture",
+      "elementCount": 3,
+      "width": 92.0,
+      "height": 72.0
+    },
+    {
+      "name": "Search",
+      "slug": "search",
+      "file": "icons/search.json",
+      "keywords": [
+        "find",
+        "lookup",
+        "magnifier",
+        "搜索",
+        "查找",
+        "检索"
+      ],
+      "description": "A magnifying glass",
+      "elementCount": 2,
+      "width": 70.0,
+      "height": 70.0
+    },
+    {
+      "name": "Settings",
+      "slug": "settings",
+      "file": "icons/settings.json",
+      "keywords": [
+        "gear",
+        "config",
+        "tool",
+        "设置",
+        "配置",
+        "工具"
+      ],
+      "description": "A simple gear",
+      "elementCount": 3,
+      "width": 82.0,
+      "height": 82.0
+    },
+    {
+      "name": "User",
+      "slug": "user",
+      "file": "icons/user.json",
+      "keywords": [
+        "person",
+        "human",
+        "author",
+        "用户",
+        "作者",
+        "人物"
+      ],
+      "description": "A friendly person",
+      "elementCount": 4,
+      "width": 56.0,
+      "height": 106.0
+    },
+    {
+      "name": "Workflow",
+      "slug": "workflow",
+      "file": "icons/workflow.json",
+      "keywords": [
+        "process",
+        "pipeline",
+        "flow",
+        "流程",
+        "工作流",
+        "管线"
+      ],
+      "description": "Three connected process nodes",
+      "elementCount": 5,
+      "width": 216.0,
+      "height": 58.0
+    }
+  ]
+}

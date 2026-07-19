@@ -1,0 +1,216 @@
+{
+  "name": "Agent",
+  "slug": "agent",
+  "keywords": [
+    "robot",
+    "ai",
+    "assistant",
+    "智能体",
+    "代理",
+    "助手"
+  ],
+  "description": "A friendly agent head",
+  "sourceLibrary": "core-handdrawn.excalidrawlib",
+  "elements": [
+    {
+      "id": "agent-antenna",
+      "type": "line",
+      "x": 40,
+      "y": 0,
+      "width": 0,
+      "height": 18,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "agent-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 24001,
+      "version": 1,
+      "versionNonce": 34001,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          18
+        ]
+      ]
+    },
+    {
+      "id": "agent-dot",
+      "type": "ellipse",
+      "x": 35,
+      "y": 0,
+      "width": 10,
+      "height": 10,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "#f8d8c4",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "agent-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 24002,
+      "version": 1,
+      "versionNonce": 34002,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "agent-head",
+      "type": "rectangle",
+      "x": 0,
+      "y": 18,
+      "width": 80,
+      "height": 62,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "#eadcf8",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "agent-group"
+      ],
+      "frameId": null,
+      "roundness": {
+        "type": 3
+      },
+      "seed": 24003,
+      "version": 1,
+      "versionNonce": 34003,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "agent-eye1",
+      "type": "ellipse",
+      "x": 19,
+      "y": 39,
+      "width": 10,
+      "height": 10,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "#343a40",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "agent-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 24004,
+      "version": 1,
+      "versionNonce": 34004,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "agent-eye2",
+      "type": "ellipse",
+      "x": 51,
+      "y": 39,
+      "width": 10,
+      "height": 10,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "#343a40",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "agent-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 24005,
+      "version": 1,
+      "versionNonce": 34005,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "agent-smile",
+      "type": "line",
+      "x": 25,
+      "y": 58,
+      "width": 30,
+      "height": 8,
+      "angle": 0,
+      "strokeColor": "#343a40",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [
+        "agent-group"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 24006,
+      "version": 1,
+      "versionNonce": 34006,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          15,
+          8
+        ],
+        [
+          30,
+          0
+        ]
+      ]
+    }
+  ]
+}

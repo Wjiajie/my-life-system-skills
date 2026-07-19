@@ -1,0 +1,29 @@
+{
+  "name": "handdrawn-whiteboard",
+  "description": "Warm portrait whiteboard with native editable doodles and CJK handwriting fallback.",
+  "canvas": {
+    "aspectRatio": "3:4",
+    "width": 900,
+    "height": 1200,
+    "background": "#f8f6f1"
+  },
+  "elementDefaults": {
+    "fontFamily": 5,
+    "roughness": 1,
+    "strokeWidth": 1,
+    "textColor": "#343a40",
+    "strokeColor": "#343a40",
+    "fillStyle": "solid",
+    "opacity": 100
+  },
+  "palette": {
+    "ink": "#343a40",
+    "paper": "#fffdf8",
+    "blue": "#dbe7ff",
+    "green": "#dff3df",
+    "yellow": "#fff0b8",
+    "peach": "#f8d8c4",
+    "lavender": "#eadcf8",
+    "muted": "#6b7280"
+  }
+}
