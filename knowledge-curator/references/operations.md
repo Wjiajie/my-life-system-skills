@@ -152,6 +152,67 @@ For processing multiple sources at once:
 
 ---
 
+## Rebuild Index Procedure
+
+Use this when the user asks to update, refresh, rebuild, or recompile the `07_Wiki/` index layer.
+
+### Step 1: Confirm Vault Root
+
+Identify the vault root. In Claudesidian this is usually:
+
+```text
+C:\Users\jiaji\Documents\github-project\claudesidian
+```
+
+If the current working directory is already the vault root, use `--vault .`.
+
+### Step 2: Run Deterministic Indexer
+
+Run the bundled skill script:
+
+```bash
+python <skill-dir>/scripts/rebuild_wiki_index.py --vault <vault-root>
+```
+
+For a preview without writes:
+
+```bash
+python <skill-dir>/scripts/rebuild_wiki_index.py --vault <vault-root> --dry-run --json
+```
+
+### Step 3: Generated Files
+
+The script rewrites only generated files in `07_Wiki/`:
+
+- `index.md`
+- `source-map.md`
+- `recent.md`
+- `health.md`
+- `manifest.json`
+
+It also appends one operation entry to `07_Wiki/log.md`.
+
+### Step 4: Safety Rules
+
+- Never edit `00_Inbox/` through `06_Metadata/`.
+- Never delete existing `07_Wiki/concepts/`, `entities/`, `sources/`, or `syntheses/` pages.
+- Treat generated index files as replaceable machine output.
+- Treat concept/entity/source/synthesis pages as interpretive compiled knowledge that still requires user confirmation before changes.
+
+### Step 5: Report
+
+Tell the user:
+
+```text
+Updated 07_Wiki index.
+- Source notes scanned: N
+- Wiki pages scanned: N
+- Generated: index.md, source-map.md, recent.md, health.md, manifest.json
+- Health: X missing frontmatter, Y broken wikilinks, Z notes without parent
+```
+
+---
+
 ## Source Type Handling
 
 | Source Type | Location | Ingest Focus |

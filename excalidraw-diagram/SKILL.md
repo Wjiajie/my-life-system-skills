@@ -1,6 +1,6 @@
 ---
 name: excalidraw-diagram
-description: Create editable Excalidraw diagrams that make visual arguments, including technical architecture, workflows, concept maps, and hand-drawn infographic whiteboards with searchable native icon libraries. Use when the user asks to visualize a process, system, comparison, concept, or explanation as an Excalidraw file or rendered image.
+description: Create editable Excalidraw diagrams that make visual arguments, including technical architecture, workflows, concept maps, and hand-drawn infographic whiteboards. For hand-drawn, CJK, social-media, or concept-rich whiteboards, search installed native icon libraries and insert semantic editable icons before drawing common metaphors by hand. Use when the user asks to visualize a process, system, comparison, concept, or explanation as an Excalidraw file or rendered image.
 ---
 
 # Excalidraw Diagram Creator
@@ -200,7 +200,7 @@ Before JSON, mentally trace how the eye moves through the diagram. There should 
 ### Step 5: Generate JSON
 Only now create the Excalidraw elements. **See below for how to handle large diagrams.**
 
-When the diagram needs hand-drawn CJK text or concept-rich icons, read `references/handdrawn-icon-workflow.md` before generating JSON. Search and insert native library icons instead of redrawing common metaphors from scratch.
+For hand-drawn CJK, social-media, or concept-rich whiteboards, icon planning is **mandatory**. Before generating JSON, read `references/handdrawn-icon-workflow.md`, map each major concept to icon search terms, search the installed catalogs, and insert a native editable icon whenever a semantic match exists. Do not redraw a common metaphor already available in the library. A cover needs at least one semantic hero icon; each content page should use 1–3 semantic icons. Use an icon-free composition only when it is intentionally typographic and record the reason.
 
 ### Step 6: Render & Validate (MANDATORY)
 After generating the JSON, you MUST run the render-view-fix loop until the diagram looks right. This is not optional — see the **Render & Validate** section below for the full process.
@@ -424,7 +424,15 @@ Settings: `fontSize: 16`, `textAlign: "center"`, `verticalAlign: "middle"`. Use 
 
 ## Native Icon Libraries
 
-Use native Excalidraw library elements when concepts benefit from recognizable icons. They remain editable and inherit the scene's hand-drawn treatment.
+For hand-drawn, CJK, social-media, and concept-rich whiteboards, native icon search and insertion are required—not optional decoration. Icons must replace or reinforce major concepts, remain editable, and inherit the scene's hand-drawn treatment.
+
+Before drawing:
+1. Create a compact icon plan: `concept → search terms → chosen slug → placement`.
+2. Search the installed catalogs for every major concrete concept.
+3. Insert the matching native icon before hand-drawing a substitute.
+4. If no icon is used for a major concept, record why the available matches were unsuitable.
+
+Coverage target: at least one semantic hero icon on a cover and 1–3 semantic icons on each content page. More icons are not automatically better; every icon must carry meaning.
 
 ```powershell
 python scripts/search_icons.py "search 检索"
@@ -795,6 +803,14 @@ If the user has installed the desktop app or pointed `EXCALIDRAW_REPO` at a vali
 7. **Argument**: Does the diagram SHOW something text alone couldn't?
 8. **Variety**: Does each major concept use a different visual pattern?
 9. **No uniform containers**: Avoided card grids and equal boxes?
+
+### Native Icon Coverage (Mandatory for Hand-Drawn / Social Whiteboards)
+- **Icon plan completed**: Did every major concrete concept get search terms and a placement decision before JSON generation?
+- **Catalog searched**: Were installed native libraries searched before drawing common metaphors by hand?
+- **Coverage met**: Does the cover have at least one semantic hero icon, and each content page 1–3 semantic icons?
+- **Semantic, not decorative**: Does each icon replace or reinforce meaning rather than merely fill whitespace?
+- **Consistent family**: Do icons share a library family, scale set, stroke weight, and roughness?
+- **Skip reason recorded**: If a suitable match was not used, is the reason explicit?
 
 ### Container Discipline
 10. **Minimal containers**: Could any boxed element work as free-floating text instead?

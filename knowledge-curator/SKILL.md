@@ -21,12 +21,13 @@ Do not wait for the user to name the skill when the current working directory is
 
 Codex adaptation rules:
 
-1. Prefer local file tools (`rg`, shell reads, and `apply_patch`) over invented commands. The operations below are LLM workflows, not CLI commands.
+1. Prefer local file tools (`rg`, shell reads, and `apply_patch`) over invented commands. Most operations below are LLM workflows; deterministic index rebuilds use the bundled script.
 2. Read broadly from `00_Inbox/` through `06_Metadata/`, but keep write operations scoped to `07_Wiki/` unless the user explicitly asks for inbox processing, PARA moves, or raw-note editing.
-3. Before modifying `07_Wiki/`, present the planned pages and wait for user confirmation. If the user has already given explicit approval for a concrete operation, proceed and report changed files.
+3. Before interpretive writes to `07_Wiki/` (concept/entity/source/synthesis pages), present the planned pages and wait for user confirmation. If the user has already given explicit approval for a concrete operation, proceed and report changed files.
 4. For ordinary knowledge questions, first read `07_Wiki/index.md`; if the index is empty or incomplete, search `03_Resources/` and relevant PARA folders directly.
 5. Preserve Obsidian conventions: `[[wikilinks]]`, YAML frontmatter, source links, and Chinese output unless the source or user request calls for another language.
 6. Clearly distinguish compiled wiki knowledge from raw notes and from external web research.
+7. When the user asks to "更新索引", "刷新 07_Wiki", "重编译 wiki", "更新 agent 入口", or similar, run `scripts/rebuild_wiki_index.py` from this skill. This is pre-approved by that intent and does not need a second confirmation because it only rewrites generated index files in `07_Wiki/` and never edits `00_Inbox/` through `06_Metadata/`.
 
 ## Philosophy
 
@@ -67,7 +68,7 @@ vault/
 
 ## Core Operations
 
-Five operations drive the system. Read [references/operations.md](references/operations.md) for detailed step-by-step procedures.
+Six operations drive the system. Read [references/operations.md](references/operations.md) for detailed step-by-step procedures.
 
 ### Invocation Model
 
@@ -80,8 +81,9 @@ Operations are **not command-line commands** — the LLM should be proactive:
 | **Lint** | Auto-triggered | Runs automatically during weekly review, or after ~10 ingests. |
 | **Review** | Semi-auto | User says "review today" or "this week". LLM can also remind proactively. |
 | **Inbox** | Semi-auto | LLM notices unprocessed inbox items and offers to organize. |
+| **Rebuild Index** | Automatic on request | User asks to update/refresh/recompile the wiki index; LLM runs the deterministic script. |
 
-**All write operations require user confirmation** before executing.
+**All interpretive write operations require user confirmation** before executing. Deterministic index rebuilds are the exception when explicitly requested, because they only regenerate machine-maintained index files.
 
 ### 1. Ingest
 
@@ -168,6 +170,31 @@ Enhanced inbox processing with wiki awareness.
 5. Update wiki pages if inbox items contain new knowledge
 6. Log operations in `07_Wiki/log.md`
 
+### 6. Rebuild Index
+
+Refresh `07_Wiki/` as the agent-facing compiled index layer without changing raw notes.
+
+**Trigger**: user asks anything like "更新索引", "刷新 wiki", "重编译 07_Wiki", "更新 agent 入口", "让 07_Wiki 跟上最新笔记", or "rebuild wiki index".
+
+**Command**:
+
+```bash
+python <skill-dir>/scripts/rebuild_wiki_index.py --vault <vault-root>
+```
+
+When running from the vault root, `<vault-root>` can be omitted.
+
+**Writes only**:
+
+- `07_Wiki/index.md` — agent-facing entry point
+- `07_Wiki/source-map.md` — all source notes grouped by PARA layer
+- `07_Wiki/recent.md` — recently modified source notes
+- `07_Wiki/health.md` — index/lint report
+- `07_Wiki/manifest.json` — machine-readable lookup index
+- `07_Wiki/log.md` — append-only operation log
+
+It is deterministic, non-LLM, and safe to run whenever the source layers change.
+
 ## Wiki Page Formats
 
 Use templates from [references/page-templates.md](references/page-templates.md). Key conventions:
@@ -180,7 +207,7 @@ Use templates from [references/page-templates.md](references/page-templates.md).
 
 ## Interaction Protocol
 
-1. **Always confirm before writing**. After analysis, present a summary of planned changes and get user approval before modifying `07_Wiki/` files.
+1. **Confirm before interpretive writing**. After analysis, present a summary of planned changes and get user approval before creating or modifying concept/entity/source/synthesis pages. Do not require an extra confirmation for user-requested deterministic index rebuilds.
 2. **User decides emphasis**. During ingest, ask what aspects matter most. Don't assume.
 3. **Transparency**. Always report which files were created/modified and why.
 4. **Never touch raw sources**. Human notes in 00-06 are read-only.
@@ -201,6 +228,8 @@ If `07_Wiki/` directory doesn't have `index.md`, guide the user through initiali
 
 Two special files replace the need for embedding-based RAG at moderate scale (~100 sources, ~hundreds of pages):
 
-**index.md** — content-oriented catalog. Each page listed with link, one-line summary, and metadata. Organized by category. The LLM reads it first when answering queries.
+**index.md** — agent-facing entry point. It is rebuilt from the current vault state and points to generated maps, recent changes, health checks, and existing compiled pages. The LLM reads it first when answering queries.
 
 **log.md** — chronological, append-only. Each entry starts with `## [YYYY-MM-DD] operation | Title`. Parseable, provides timeline context. Helps the LLM understand recency and evolution.
+
+**manifest.json** — machine-readable lookup index generated by `scripts/rebuild_wiki_index.py`. It records source note paths, titles, tags, parent links, wikilinks, hashes, modified times, and health findings so an agent can locate raw notes precisely after reading `07_Wiki/index.md`.

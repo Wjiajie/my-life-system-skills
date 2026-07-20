@@ -10,12 +10,23 @@ Use this reference when the user asks for a hand-drawn infographic, a concept-ri
 - Use `roughness: 1`, dark-gray thin strokes, solid low-saturation fills, and an off-white paper background.
 - Use one icon family per diagram. Keep icon sizes within a small set such as 64, 80, and 112 pixels.
 - Keep icons semantic: an icon must replace or reinforce a concept, not decorate unrelated text.
+- Treat native icon search as mandatory for hand-drawn, CJK, social-media, and concept-rich whiteboards. Use at least one semantic hero icon on a cover and 1–3 semantic icons on each content page unless the page is intentionally typographic.
 
 Apply the preset after assembling a scene:
 
 ```powershell
 python scripts/apply_style_preset.py <diagram.excalidraw>
 ```
+
+## Mandatory icon plan
+
+Create this plan before generating scene JSON:
+
+| Major concept | Search terms | Chosen library + slug | Placement | Skip reason |
+|---------------|--------------|-----------------------|-----------|-------------|
+| Example: progressive loading | `layers level 层级` | `Core Handdrawn:layers` | Between Level 1 and Level 2 | — |
+
+Search every major concrete concept. If a semantic match exists, insert it before drawing a substitute. The skip-reason column is required only when a matching icon is deliberately not used because it conflicts with the visual argument, scale, or composition.
 
 ## Icon selection order
 
@@ -36,6 +47,7 @@ python scripts/add_icon_to_diagram.py <diagram.excalidraw> workflow 130 500 --wi
 ```
 
 5. Use emoji only for familiar people or emotional markers. Use raster generation only for a unique illustration that cannot be expressed with native elements; raster images are not fully editable.
+6. After insertion, confirm the cover has at least one semantic hero icon and each content page has 1–3 semantic icons. Do not add icons merely to reach the count; revise the concept mapping instead.
 
 ## Install another Excalidraw library
 
@@ -49,6 +61,8 @@ The splitter creates `icons/*.json`, `catalog.json`, and `reference.md`. Preserv
 
 ## Quality gates
 
+- The icon plan covers every major concrete concept and records any deliberate skip.
+- A cover contains at least one semantic hero icon; each content page contains 1–3 semantic icons unless intentionally typographic.
 - Search results came from a known local library and the license is recorded.
 - All inserted elements have unique IDs; bindings and container references resolve.
 - Icon family, scale, stroke weight, and roughness are consistent.
