@@ -1,0 +1,3 @@
+[submodule "interface-skills"]
+	path = interface-skills
+	url = https://github.com/jakubkrehel/skills.git
