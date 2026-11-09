@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 3,
+  "id": "org.omn.template.tide-station",
+  "version": "3.0.0",
+  "title": "潮汐观测站",
+  "description": "在海岸观测站记录潮水、维护仪器并与居民协作。测量和推测必须区分，有限资源决定行动窗口。",
+  "category": "海岸科考",
+  "systemPromptPath": "prompts/system.md",
+  "skillPath": "skill/guide.md",
+  "initialization": {
+    "schemaPath": "schemas/initialization.schema.json",
+    "titlePath": "station.name"
+  },
+  "views": {
+    "initialization": {
+      "entry": "web/index.html",
+      "stylesheet": "web/views.css"
+    },
+    "card": {
+      "entry": "web/card.html",
+      "stylesheet": "web/views.css"
+    },
+    "detail": {
+      "entry": "web/detail.html",
+      "stylesheet": "web/views.css"
+    },
+    "storyBackground": {
+      "entry": "web/background.html",
+      "stylesheet": "web/views.css"
+    },
+    "storyContent": {
+      "entry": "web/content.html",
+      "stylesheet": "web/views.css"
+    }
+  }
+}

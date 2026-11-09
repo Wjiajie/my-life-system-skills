@@ -1,0 +1,50 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "station",
+    "observer",
+    "tide",
+    "mission"
+  ],
+  "properties": {
+    "station": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "coast"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "coast": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      }
+    },
+    "observer": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40
+    },
+    "tide": {
+      "type": "string",
+      "enum": [
+        "涨潮",
+        "退潮",
+        "平潮"
+      ]
+    },
+    "mission": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 300
+    }
+  }
+}

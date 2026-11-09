@@ -1,6 +1,6 @@
 # my-life-system-skills
 
-面向 Codex 的个人 skill 集合。仓库按用途分成三组，并通过一个同步脚本把每个包含 `SKILL.md` 的目录链接到用户级 Codex skills 目录。
+面向 Codex、WorkBuddy 与 DeepSeek Harness 的个人 skill 集合。仓库按用途分成四组，`sync.ps1` 把每个含 `SKILL.md` 的目录链接进宿主的用户级 skills 目录。完整的 skill 清单、新增规则与宿主差异见 [AGENTS.md](AGENTS.md)。
 
 ## 模块
 
@@ -12,14 +12,22 @@
 - `hot-info-crawler`：按主题聚合热点信息，增量写入 Markdown，并可衔接 Obsidian / 博客。
 - `humanizer`：中英文文本去 AI 味、润色与风格改写。
 - `knowledge-curator`：为 Claudesidian / Obsidian PARA vault 编译、检索与维护知识 Wiki。
+- `omn-plugin-author`：为 OMN 创建或升级 v4 插件包（前置指引、后置处理、提示词、结果视图、Action）。
+- `omn-template-author`：为 OMN 创建或升级 v3 模板包（初始化数据、创作提示词、HTML/CSS/JS 风格）。
+- `browser-agents`：用真实浏览器做自动化与抓取，底座是 browser-harness，多步表单/导航可选仓库内固化的 jev-ultrafast。
 
 ### `decision/`
 
 目标、产品与高不确定性决策：
 
-- `goal-loop`：目标定义、计划、执行、验证、续跑与不稳定上下文交接。
 - `ooda-decision-advisor`：按 Observe / Orient / Decide / Act 组织战略判断和最小行动闭环。
 - `product-office-hours`：在实现前澄清用户、痛点、最小有用切片、风险与产品取舍。
+
+### `workflow/`
+
+执行与验收方法（本仓库自维护；上游工程流程在 `engineering/`）：
+
+- `observe-test-verify`：用「观察—修改—测试—验证」闭环定位缺陷、优化性能或验收真实行为，逐轮记录可复查证据。
 
 ### `engineering/`
 
@@ -38,43 +46,32 @@
 
 ## 初始化仓库
 
-克隆后先拉取 engineering 子模块：
+克隆后先拉取两个子模块（`engineering/skills` 与 `tools/jev-ultrafast`）：
 
 ```powershell
 git submodule update --init --recursive
 ```
 
-## 安装到 Codex
+## 安装
 
-在 PowerShell 中运行：
-
-```powershell
-.\sync.ps1 -CleanPersonal
-```
-
-该命令会：
-
-1. 清理 `~/.codex/skills` 与 Codex 同样会扫描的 `~/.agents/skills` 中现有个人 skills；真实目录会移到各自的 `skill-backups/<时间戳>/`，旧链接直接移除，`.agents/.skill-lock.json` 会备份后重置为空。
-2. 保留 Codex 官方 `.system` skills，不修改 `~/.codex/plugins`，保留插件目标链接，并保留没有 `SKILL.md` 的 Codex 基础设施目录。
-3. 自动发现 `creation/`、`decision/`、`engineering/skills/skills/` 下的所有 skills。
-4. 优先创建目录符号链接；若 Windows 当前权限不允许，则回退为无需管理员权限的 Junction。
-5. 对 engineering 中含 Claude 专用 frontmatter 的 user-invoked skills，在 `.codex-generated/` 生成忽略版本控制的 Codex 兼容镜像；原上游子模块保持干净，`agents/openai.yaml` 的显式调用策略保持不变。
-6. 验证每个链接都能解析到对应的 `SKILL.md`。
-
-只做增量同步、不清理其他个人 skills：
+三个宿主共用同一个脚本。脚本做了什么、各宿主的 frontmatter 差异、以及改动子模块时的上游规则，都在 [AGENTS.md](AGENTS.md)。
 
 ```powershell
-.\sync.ps1
+.\sync.ps1                             # Codex（默认平台），目标 ~/.codex/skills
+.\sync.ps1 -Platform WorkBuddy         # 目标 ~/.workbuddy/skills
+.\sync.ps1 -Platform DeepSeekHarness   # 目标 $DSH_HOME/skills，默认 ~/.dsh/skills
 ```
 
-预演而不修改文件系统：
+- 不加参数是增量同步：补齐新 skills，清掉指向本仓库但已失效的旧链接。
+- 加 `-CleanPersonal` 会先清理目标目录里的个人 skills，真实目录备份到 `skill-backups/<时间戳>/`。
+- `-WhatIf` 预演，不改文件系统。运行结束后脚本会逐个验证链接能解析到 `SKILL.md`，输出 `skill sync complete` 即成功。
 
-```powershell
-.\sync.ps1 -CleanPersonal -WhatIf
-```
+完成后，新 skills 会在下一轮对话或重新加载宿主后进入可用列表。
 
-可用 `-LinkMode SymbolicLink` 或 `-LinkMode Junction` 强制链接类型；默认 `Auto`。
+## 关于符号链接
 
-`link_skills.ps1` 是兼容旧用法的入口，参数会转发给 `sync.ps1`。
+脚本优先创建目录符号链接。PowerShell 5.1 的 `New-Item -ItemType SymbolicLink` 不会传递 `SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE`，因此即使开启了 Windows 开发者模式也仍要求管理员权限；脚本改为直接 P/Invoke `CreateSymbolicLinkW` 并带上该标志位，非提权也能建出真符号链接，只有系统仍然拒绝时才回退到 Junction。
 
-完成后，新 skills 会在下一轮对话或重新加载 Codex 后进入可用列表。
+删除链接时走 `[System.IO.Directory]::Delete`，不会跟随重解析点，因此只摘链接、不动目标目录。
+
+Windows 上符号链接的 target 会以 `\\?\C:\...` 形式存储，这是 `mklink` 同样会产生的正常结果。

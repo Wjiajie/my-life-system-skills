@@ -197,6 +197,9 @@ cython_debug/
 # Generated Codex-compatible mirrors for cross-host engineering skills
 .codex-generated/
 
+# Local memsearch tool state (watch pid, scratch memory notes)
+.memsearch/
+
 # Cursor
 #  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
 #  exclude from AI features like autocomplete and code analysis. Recommended for sensitive data

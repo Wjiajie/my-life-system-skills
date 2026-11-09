@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "summary",
+    "core",
+    "recent",
+    "longTerm"
+  ],
+  "properties": {
+    "summary": {
+      "type": "string",
+      "maxLength": 800
+    },
+    "core": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "string",
+        "maxLength": 800
+      }
+    },
+    "recent": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "string",
+        "maxLength": 800
+      }
+    },
+    "longTerm": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "string",
+        "maxLength": 800
+      }
+    }
+  }
+}

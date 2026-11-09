@@ -1,0 +1,4 @@
+interface:
+  display_name: "OMN 模板作者"
+  short_description: "生成任意题材与风格的 OMN 独立模板包，完成结构校验、打包和预览"
+  default_prompt: "使用 $omn-template-author 为我的创作主题生成可导入 OMN 的独立模板。"

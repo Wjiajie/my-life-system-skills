@@ -1,7 +1,10 @@
 [CmdletBinding(SupportsShouldProcess = $true)]
 param(
+    [ValidateSet("Codex", "WorkBuddy", "DeepSeekHarness")]
+    [string]$Platform = "Codex",
     [string]$SkillsDirectory,
     [switch]$CleanPersonal,
+    [switch]$Force,
     [ValidateSet("Auto", "SymbolicLink", "Junction")]
     [string]$LinkMode = "Auto"
 )
@@ -10,13 +13,28 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = (Resolve-Path -LiteralPath $PSScriptRoot).Path
 $syncTimestamp = Get-Date -Format "yyyyMMdd-HHmmss"
+$userProfileRoot = [Environment]::GetFolderPath("UserProfile")
 
 if ([string]::IsNullOrWhiteSpace($SkillsDirectory)) {
-    $configuredCodexRoot = [Environment]::GetEnvironmentVariable("CODEX_HOME")
-    if ([string]::IsNullOrWhiteSpace($configuredCodexRoot)) {
-        $configuredCodexRoot = Join-Path ([Environment]::GetFolderPath("UserProfile")) ".codex"
+    if ($Platform -eq "WorkBuddy") {
+        $SkillsDirectory = Join-Path $userProfileRoot ".workbuddy\skills"
     }
-    $SkillsDirectory = Join-Path $configuredCodexRoot "skills"
+    elseif ($Platform -eq "DeepSeekHarness") {
+        # The harness resolves DSH_HOME itself, so honour it and fall back to its
+        # own default of ~/.dsh.
+        $configuredDshRoot = [Environment]::GetEnvironmentVariable("DSH_HOME")
+        if ([string]::IsNullOrWhiteSpace($configuredDshRoot)) {
+            $configuredDshRoot = Join-Path $userProfileRoot ".dsh"
+        }
+        $SkillsDirectory = Join-Path $configuredDshRoot "skills"
+    }
+    else {
+        $configuredCodexRoot = [Environment]::GetEnvironmentVariable("CODEX_HOME")
+        if ([string]::IsNullOrWhiteSpace($configuredCodexRoot)) {
+            $configuredCodexRoot = Join-Path $userProfileRoot ".codex"
+        }
+        $SkillsDirectory = Join-Path $configuredCodexRoot "skills"
+    }
 }
 
 $skillsRoot = [IO.Path]::GetFullPath($SkillsDirectory)
@@ -28,6 +46,7 @@ if ($skillsRootInfo.Name -ne "skills" -or [string]::IsNullOrWhiteSpace($skillsRo
 $collectionSpecs = @(
     @{ Name = "creation"; Path = (Join-Path $repoRoot "creation") },
     @{ Name = "decision"; Path = (Join-Path $repoRoot "decision") },
+    @{ Name = "workflow"; Path = (Join-Path $repoRoot "workflow") },
     @{ Name = "engineering"; Path = (Join-Path $repoRoot "engineering\skills\skills") }
 )
 
@@ -37,10 +56,27 @@ foreach ($collection in $collectionSpecs) {
     }
 }
 
+# PowerShell 5.1's New-Item -ItemType SymbolicLink never passes
+# SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE, so it demands elevation even when
+# Windows Developer Mode is on. Call CreateSymbolicLinkW directly with that flag
+# and only fall back to a Junction if the OS still refuses.
+if (-not ([System.Management.Automation.PSTypeName]'ManagedSkillSymlink').Type) {
+    Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+
+public class ManagedSkillSymlink
+{
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    public static extern bool CreateSymbolicLinkW(string lpSymlinkFileName, string lpTargetFileName, uint dwFlags);
+}
+'@ -ErrorAction Stop
+}
+
 function Get-SkillNameFromFile {
     param([Parameter(Mandatory = $true)][string]$SkillFile)
 
-    $content = Get-Content -Raw -LiteralPath $SkillFile
+    $content = [IO.File]::ReadAllText($SkillFile)
     $match = [regex]::Match($content, '(?m)^name:\s*["'']?([^\r\n"'']+)["'']?\s*$')
     if (-not $match.Success) {
         throw "Missing skill name in frontmatter: $SkillFile"
@@ -51,7 +87,7 @@ function Get-SkillNameFromFile {
 function Test-NeedsCodexAdapter {
     param([Parameter(Mandatory = $true)][string]$SkillFile)
 
-    $content = Get-Content -Raw -LiteralPath $SkillFile
+    $content = [IO.File]::ReadAllText($SkillFile)
     $frontmatter = [regex]::Match($content, '\A---\s*\r?\n(?<body>.*?)\r?\n---\s*\r?\n', [Text.RegularExpressions.RegexOptions]::Singleline)
     if (-not $frontmatter.Success) {
         throw "Malformed frontmatter: $SkillFile"
@@ -86,7 +122,7 @@ if ($duplicateGroups) {
     $details = $duplicateGroups | ForEach-Object {
         "{0}: {1}" -f $_.Name, (($_.Group.Source) -join ", ")
     }
-    throw "Duplicate skill names cannot share one Codex directory:`n$($details -join "`n")"
+    throw "Duplicate skill names cannot share one $Platform directory:`n$($details -join "`n")"
 }
 
 if ($discovered.Count -eq 0) {
@@ -95,7 +131,18 @@ if ($discovered.Count -eq 0) {
 
 $adapterRoot = Join-Path $repoRoot ".codex-generated\skills"
 $adapterCount = 0
-foreach ($skill in $discovered | Where-Object NeedsCodexAdapter) {
+if ($Platform -ne "Codex") {
+    # WorkBuddy and DeepSeek Harness read the same SKILL.md frontmatter as Claude
+    # Code, so the upstream `disable-model-invocation` / `argument-hint` keys stay
+    # intact and the links point straight at the sources instead of generated
+    # mirrors. DeepSeek Harness honours `disable-model-invocation` natively and
+    # ignores `argument-hint`; it rejects the legacy camelCase invocation keys,
+    # which no skill in this repository uses.
+    foreach ($skill in $discovered) {
+        $skill.InstallSource = $skill.Source
+    }
+}
+foreach ($skill in ($discovered | Where-Object { $Platform -eq "Codex" -and $_.NeedsCodexAdapter })) {
     $adapterPath = Join-Path $adapterRoot $skill.Name
     $skill.InstallSource = $adapterPath
     $adapterCount++
@@ -118,22 +165,32 @@ foreach ($skill in $discovered | Where-Object NeedsCodexAdapter) {
 
     Copy-Item -LiteralPath $skill.Source -Destination $adapterPath -Recurse
     $adapterSkillFile = Join-Path $adapterPath "SKILL.md"
-    $adapterContent = Get-Content -Raw -LiteralPath $adapterSkillFile
+    # ReadAllText decodes UTF-8 regardless of the console code page that
+    # Windows PowerShell 5.1 would otherwise use for Get-Content -Raw.
+    $adapterContent = [IO.File]::ReadAllText($adapterSkillFile)
     $adapterContent = [regex]::Replace(
         $adapterContent,
         '(?m)^(disable-model-invocation|argument-hint):.*\r?\n',
         ''
     )
-    Set-Content -LiteralPath $adapterSkillFile -Value $adapterContent -Encoding utf8 -NoNewline
+    [IO.File]::WriteAllText(
+        $adapterSkillFile,
+        $adapterContent,
+        [Text.UTF8Encoding]::new($false)
+    )
 }
 
 if (-not (Test-Path -LiteralPath $skillsRoot)) {
-    if ($PSCmdlet.ShouldProcess($skillsRoot, "Create Codex skills directory")) {
+    if ($PSCmdlet.ShouldProcess($skillsRoot, "Create $Platform skills directory")) {
         New-Item -ItemType Directory -Path $skillsRoot -Force | Out-Null
     }
 }
 
-$preservedNames = @(".system", "codex-primary-runtime")
+$preservedNames = switch ($Platform) {
+    "WorkBuddy" { @() }
+    "DeepSeekHarness" { @(".system") }
+    default { @(".system", "codex-primary-runtime") }
+}
 $removed = 0
 $backedUp = 0
 $backupRoot = Join-Path $skillsRootInfo.Parent.FullName ("skill-backups\" + $syncTimestamp)
@@ -155,7 +212,22 @@ function Remove-SkillItem {
 
     if ($PSCmdlet.ShouldProcess($Item.FullName, "Remove $Reason")) {
         if (($Item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
-            Remove-Item -LiteralPath $Item.FullName -Force
+            # Delete the link itself, never its target. Directory.Delete on a reparse
+            # point does not follow it, and using the BCL avoids Remove-Item wrappers
+            # that resolve the link first and refuse to delete a non-empty directory.
+            $linkDeleted = $false
+            if ($Item.PSIsContainer) {
+                try {
+                    [System.IO.Directory]::Delete($Item.FullName)
+                    $linkDeleted = $true
+                }
+                catch {
+                    $linkDeleted = $false
+                }
+            }
+            if (-not $linkDeleted) {
+                [System.IO.File]::Delete($Item.FullName)
+            }
         }
         elseif ($Item.PSIsContainer) {
             Remove-Item -LiteralPath $Item.FullName -Force -Recurse
@@ -197,7 +269,7 @@ function Move-SkillItemToBackup {
 if ($CleanPersonal -and (Test-Path -LiteralPath $skillsRoot)) {
     foreach ($item in Get-ChildItem -Force -LiteralPath $skillsRoot) {
         if ($item.Name -in $preservedNames) {
-            Write-Host "[KEEP] $($item.Name) (Codex infrastructure)" -ForegroundColor DarkGray
+            Write-Host "[KEEP] $($item.Name) ($Platform infrastructure)" -ForegroundColor DarkGray
             continue
         }
 
@@ -218,8 +290,7 @@ if ($CleanPersonal -and (Test-Path -LiteralPath $skillsRoot)) {
 $agentsRemoved = 0
 $agentsBackedUp = 0
 $agentsBackupRoot = $null
-if ($CleanPersonal) {
-    $userProfileRoot = [Environment]::GetFolderPath("UserProfile")
+if ($CleanPersonal -and $Platform -eq "Codex") {
     $agentsRoot = Join-Path $userProfileRoot ".agents"
     $agentsSkillsRoot = Join-Path $agentsRoot "skills"
     $agentsBackupRoot = Join-Path $agentsRoot ("skill-backups\" + $syncTimestamp)
@@ -336,9 +407,18 @@ function New-ManagedSkillLink {
     $lastError = $null
     foreach ($mode in $modes) {
         try {
-            New-Item -ItemType $mode -Path $TargetPath -Target $SourcePath -ErrorAction Stop | Out-Null
-            if ($LinkMode -eq "Auto" -and $mode -eq "Junction") {
-                $script:fallbacks++
+            if ($mode -eq "SymbolicLink") {
+                $flags = 0x1 -bor 0x2 # SYMBOLIC_LINK_FLAG_DIRECTORY | SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE
+                if (-not [ManagedSkillSymlink]::CreateSymbolicLinkW($TargetPath, $SourcePath, $flags)) {
+                    $win32 = [Runtime.InteropServices.Marshal]::GetLastWin32Error()
+                    throw ("CreateSymbolicLinkW failed with Win32 error {0}" -f $win32)
+                }
+            }
+            else {
+                New-Item -ItemType Junction -Path $TargetPath -Target $SourcePath -ErrorAction Stop | Out-Null
+                if ($LinkMode -eq "Auto") {
+                    $script:fallbacks++
+                }
             }
             return $mode
         }
@@ -365,7 +445,7 @@ foreach ($skill in $discovered | Sort-Object Name) {
             -not [string]::IsNullOrWhiteSpace($_) -and
             [IO.Path]::GetFullPath([string]$_) -eq $sourceFull
         }
-        if ($targetMatches.Count -gt 0) {
+        if ($targetMatches.Count -gt 0 -and -not $Force) {
             Write-Host "[OK]   $($skill.Name) (already linked)" -ForegroundColor DarkGreen
             $reused++
             continue
@@ -385,9 +465,19 @@ $verificationErrors = @()
 if (-not $WhatIfPreference) {
     foreach ($skill in $discovered) {
         $target = Join-Path $skillsRoot $skill.Name
-        if (-not (Test-Path -LiteralPath (Join-Path $target "SKILL.md"))) {
+        $linkedSkillFile = Join-Path $target "SKILL.md"
+        if (-not (Test-Path -LiteralPath $linkedSkillFile)) {
             $verificationErrors += "Missing linked SKILL.md: $target"
             continue
+        }
+        $skillBytes = [IO.File]::ReadAllBytes($linkedSkillFile)
+        if (
+            $skillBytes.Length -lt 3 -or
+            $skillBytes[0] -ne 0x2D -or
+            $skillBytes[1] -ne 0x2D -or
+            $skillBytes[2] -ne 0x2D
+        ) {
+            $verificationErrors += "SKILL.md must start with an unprefixed YAML delimiter (---): $linkedSkillFile"
         }
         $item = Get-Item -Force -LiteralPath $target
         if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -eq 0) {
@@ -401,7 +491,7 @@ if ($verificationErrors.Count -gt 0) {
 }
 
 Write-Host ""
-Write-Host "Codex skill sync complete" -ForegroundColor Cyan
+Write-Host "$Platform skill sync complete" -ForegroundColor Cyan
 Write-Host "  discovered : $($discovered.Count)"
 Write-Host "  created    : $created"
 Write-Host "  reused     : $reused"
@@ -410,11 +500,13 @@ Write-Host "  backed up  : $backedUp"
 if ($backedUp -gt 0) {
     Write-Host "  backup     : $backupRoot"
 }
-Write-Host "  .agents links removed: $agentsRemoved"
-Write-Host "  .agents skills backed up: $agentsBackedUp"
-if ($agentsBackedUp -gt 0 -or $agentsRemoved -gt 0) {
-    Write-Host "  .agents backup: $agentsBackupRoot"
+if ($Platform -eq "Codex") {
+    Write-Host "  .agents links removed: $agentsRemoved"
+    Write-Host "  .agents skills backed up: $agentsBackedUp"
+    if ($agentsBackedUp -gt 0 -or $agentsRemoved -gt 0) {
+        Write-Host "  .agents backup: $agentsBackupRoot"
+    }
 }
-Write-Host "  Codex adapters: $adapterCount"
+Write-Host "  $Platform adapters: $adapterCount"
 Write-Host "  junction fallback: $fallbacks"
 Write-Host "  destination: $skillsRoot"

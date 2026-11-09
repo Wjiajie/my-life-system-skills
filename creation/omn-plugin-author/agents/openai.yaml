@@ -1,0 +1,4 @@
+interface:
+  display_name: "OMN 插件作者"
+  short_description: "生成可跨模板自由装载的 OMN 插件，定义 Agent 处理、提示词设置与结果视图"
+  default_prompt: "使用 $omn-plugin-author 为我的需求生成可跨模板装载的 OMN 插件。"

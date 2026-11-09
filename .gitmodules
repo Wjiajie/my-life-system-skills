@@ -1,3 +1,6 @@
 [submodule "engineering/skills"]
 	path = engineering/skills
 	url = https://github.com/mattpocock/skills.git
+[submodule "tools/jev-ultrafast"]
+	path = tools/jev-ultrafast
+	url = https://github.com/browser-use/jev-ultrafast.git

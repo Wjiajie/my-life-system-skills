@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 4,
+  "id": "org.omn.plugin.memory",
+  "version": "4.0.0",
+  "name": "故事记忆",
+  "description": "创作前提醒相关往事，正文完成后整理连续记忆。",
+  "contributions": {
+    "before": {
+      "systemPromptPath": "prompts/before.md",
+      "skillPath": "skill/before.md"
+    },
+    "after": {
+      "systemPromptPath": "prompts/after.md",
+      "skillPath": "skill/guide.md",
+      "result": {
+        "kind": "structured",
+        "schemaPath": "schemas/result.schema.json"
+      }
+    }
+  },
+  "capabilities": [],
+  "storageQuotaBytes": 0,
+  "configuration": {
+    "promptTargets": [
+      {
+        "id": "creative-guidance",
+        "target": "before",
+        "label": "自定义创作要求",
+        "editable": true
+      },
+      {
+        "id": "processing-guidance",
+        "target": "after",
+        "label": "自定义故事记忆处理要求",
+        "editable": true
+      }
+    ]
+  },
+  "view": {
+    "entry": "web/result.html",
+    "stylesheet": "web/style.css"
+  },
+  "actions": [
+    {
+      "id": "organize-long-term",
+      "label": "整理长期记忆",
+      "inputSchemaPath": "schemas/organize.input.json",
+      "systemPromptPath": "prompts/organize.md"
+    }
+  ]
+}

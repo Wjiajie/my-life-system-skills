@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "focus"
+  ],
+  "properties": {
+    "focus": {
+      "type": "string",
+      "title": "整理重点",
+      "description": "例如保留承诺、压缩重复事件",
+      "minLength": 1,
+      "maxLength": 300
+    }
+  }
+}

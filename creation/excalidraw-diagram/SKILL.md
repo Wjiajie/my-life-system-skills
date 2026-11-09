@@ -9,6 +9,8 @@ Generate `.excalidraw` JSON files that **argue visually**, not just display info
 
 **Setup:** If the user asks you to set up this skill (renderer, dependencies, etc.), see `README.md` for instructions.
 
+**Paths:** every path and command in this file is relative to this skill's directory (the folder holding this `SKILL.md`).
+
 ## Customization
 
 **All colors and brand-specific styles live in one file:** `references/color-palette.md`. Read it before generating any diagram and use it as the single source of truth for all color choices — shape fills, strokes, text colors, evidence artifact backgrounds, everything.
@@ -474,7 +476,7 @@ You cannot judge a diagram from JSON alone. After generating or editing the Exca
 ### How to Render
 
 ```bash
-cd C:\Users\jiaji\Documents\github-project\my-life-system-skills\excalidraw-diagram\references && uv run python render_excalidraw.py <path-to-file.excalidraw>
+cd references && uv run python render_excalidraw.py <path-to-file.excalidraw>
 ```
 
 This outputs a PNG next to the `.excalidraw` file. Then use the **Read tool** on the PNG to actually view it.
@@ -524,9 +526,9 @@ The loop is done when:
 - You'd be comfortable showing it to someone without caveats
 
 ### First-Time Setup
-If the render script hasn't been set up yet:
+If the render script hasn't been set up yet, run this from this skill's directory:
 ```bash
-cd C:\Users\jiaji\Documents\github-project\my-life-system-skills\excalidraw-diagram\references
+cd references
 uv sync
 uv run playwright install chromium
 ```
@@ -535,8 +537,9 @@ uv run playwright install chromium
 
 When the user asks for a public Excalidraw link, upload the validated `.excalidraw` file after the render-view-fix loop succeeds:
 
+Run this from this skill's directory:
+
 ```bash
-cd C:\Users\jiaji\Documents\github-project\my-life-system-skills\excalidraw-diagram
 uv run --project references python scripts/upload.py <path-to-file.excalidraw>
 ```
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "观察—修改—测试—验证"
+  short_description: "用采样、红绿回归和真实运行验收推进修复，并逐轮记录可复查证据"
+  default_prompt: "使用 $observe-test-verify 定位并修复这个问题；先观察复现，再最小修改和代码侧测试，按已有授权实际构建与运行验证，逐轮记录证据。"

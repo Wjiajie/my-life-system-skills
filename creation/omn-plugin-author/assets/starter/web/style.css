@@ -1,0 +1,5 @@
+.panel { color:var(--omn-text); background:var(--omn-bg); padding:16px; border:1px solid var(--omn-border); border-radius:12px; line-height:1.7; }
+h2 { color:var(--omn-accent); font-size:20px; } h3 { font-size:16px; } p { margin:8px 0; }
+.option,.person { padding:12px; margin:10px 0; border:1px solid var(--omn-border); border-radius:8px; }
+.muted { color:var(--omn-muted); } ul { padding-left:20px; } li { margin:6px 0; }
+[data-theme="night"] .panel { border-color:var(--omn-accent); }

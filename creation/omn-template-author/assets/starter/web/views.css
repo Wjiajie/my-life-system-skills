@@ -1,0 +1,11 @@
+:root {color-scheme:light;--bg:#e4eeeb;--ink:#153d48;--accent:#a04d1c;--line:#a3bdb8}
+:root[data-theme="night"] {color-scheme:dark;--bg:#09232d;--ink:#cde4df;--accent:#f4bd80;--line:#345c69}
+* {box-sizing:border-box} body {margin:0;color:var(--ink);background:var(--bg);font:16px/1.65 system-ui,sans-serif;overflow-wrap:anywhere}
+main {padding:22px}.card {margin:12px;border:2px solid var(--line);border-radius:24px 4px}
+.eyebrow {font:12px/1.5 ui-monospace,monospace;letter-spacing:.12em;color:var(--accent)}
+h1 {font-size:clamp(30px,9vw,48px);line-height:1.2}h2 {font-size:22px}.note{border-left:4px solid var(--accent)}
+.background {height:100vh;background:radial-gradient(ellipse at 20% 40%,var(--line),transparent 65%);opacity:.3}
+label {display:grid;gap:6px;margin:18px 0} input,textarea,select {width:100%;min-height:44px;min-width:0;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+textarea {min-height:100px}button {min-height:44px;padding:10px 16px;border:1px solid var(--ink);border-radius:6px;background:var(--ink);color:var(--bg);font:inherit}button:disabled{opacity:.5}
+:focus-visible {outline:3px solid var(--accent);outline-offset:3px} [role="status"]{min-height:28px}
+@media (prefers-color-scheme:dark) { :root:not([data-theme]) {--bg:#09232d;--ink:#cde4df;--accent:#f4bd80;--line:#345c69} }
